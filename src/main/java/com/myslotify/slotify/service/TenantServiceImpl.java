@@ -72,7 +72,7 @@ public class TenantServiceImpl implements TenantService {
         try {
             springLiquibase.setDataSource(dataSource);
             springLiquibase.setDefaultSchema(schemaName);
-            springLiquibase.setChangeLog("classpath:db/changelog/db.changelog-master.xml");
+            springLiquibase.setChangeLog("classpath:db/changelog/db.changelog-tenant.xml");
             springLiquibase.afterPropertiesSet();
         } catch (Exception e) {
             throw new RuntimeException("Failed to apply Liquibase changes for schema: " + schemaName, e);
