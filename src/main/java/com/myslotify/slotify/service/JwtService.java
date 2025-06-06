@@ -1,11 +1,7 @@
 package com.myslotify.slotify.service;
 
 import com.myslotify.slotify.entity.User;
-import org.springframework.stereotype.Service;
 
-import java.security.Key;
-
-@Service
 public interface JwtService {
 
     String generateToken(User user);
