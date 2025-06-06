@@ -3,8 +3,11 @@ package com.myslotify.slotify.service;
 import com.myslotify.slotify.dto.AuthResponse;
 import com.myslotify.slotify.dto.LoginRequest;
 import com.myslotify.slotify.dto.ResetPasswordRequest;
+import com.myslotify.slotify.entity.Admin;
 import com.myslotify.slotify.entity.User;
+import com.myslotify.slotify.repository.AdminRepository;
 import com.myslotify.slotify.repository.UserRepository;
+import com.myslotify.slotify.util.TenantContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,12 +18,27 @@ public class AuthServiceImpl implements AuthService {
     private UserRepository userRepository;
 
     @Autowired
+    private AdminRepository adminRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JwtService jwtService;
 
     public AuthResponse login(LoginRequest request) {
+        if (TenantContext.getCurrentTenant() == null) {
+            Admin admin = adminRepository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+
+            if (!passwordEncoder.matches(request.getPassword(), admin.getPassword())) {
+                throw new RuntimeException("Invalid credentials");
+            }
+
+            String token = jwtService.generateToken(admin);
+            return new AuthResponse("Login successful", token);
+        }
+
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid credentials"));
 

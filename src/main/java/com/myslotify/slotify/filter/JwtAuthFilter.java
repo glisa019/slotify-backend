@@ -1,7 +1,10 @@
 package com.myslotify.slotify.filter;
 
+import com.myslotify.slotify.entity.Admin;
 import com.myslotify.slotify.entity.User;
+import com.myslotify.slotify.repository.AdminRepository;
 import com.myslotify.slotify.repository.UserRepository;
+import com.myslotify.slotify.util.TenantContext;
 import com.myslotify.slotify.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,6 +29,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AdminRepository adminRepository;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -41,12 +47,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String email = jwtService.extractEmail(token);
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            User user = userRepository.findByEmail(email).orElse(null);
-
-            if (user != null && jwtService.isTokenValid(token, user)) {
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        user, null, List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
-                SecurityContextHolder.getContext().setAuthentication(auth);
+            if (TenantContext.getCurrentTenant() == null) {
+                Admin admin = adminRepository.findByEmail(email).orElse(null);
+                if (admin != null && jwtService.isTokenValid(token, admin)) {
+                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                            admin, null, List.of(new SimpleGrantedAuthority("ROLE_" + admin.getRole().name())));
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+            } else {
+                User user = userRepository.findByEmail(email).orElse(null);
+                if (user != null && jwtService.isTokenValid(token, user)) {
+                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                            user, null, List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
             }
         }
 
