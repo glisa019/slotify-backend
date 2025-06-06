@@ -45,7 +45,8 @@ public class TenantServiceImpl implements TenantService {
 
     @Transactional
     public Tenant activateTenant(String name, String schemaName) {
-        Tenant tenant = new Tenant();
+        Tenant tenant = tenantRepository.findByName(name)
+                .orElseThrow(() -> new RuntimeException("Tenant not found"));
         tenant.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
 
         tenantRepository.save(tenant);
