@@ -16,6 +16,33 @@ After building, run the jar from the `target` directory:
 java -jar target/slotify-*.jar
 ```
 
+## Database configuration
+
+Add a JDBC driver for your database. For PostgreSQL the Maven dependency is:
+
+```xml
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+</dependency>
+```
+
+Configure the datasource via `application.properties` or environment variables:
+
+```bash
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/slotify
+SPRING_DATASOURCE_USERNAME=slotify
+SPRING_DATASOURCE_PASSWORD=secret
+SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+```
+
+Before running the application for the first time, create the `system` schema.
+Liquibase will load its tables into this schema:
+
+```sql
+CREATE SCHEMA system;
+```
+
 ## Environment variables
 
 Several settings can be provided either via environment variables or by editing `src/main/resources/application.properties`:
