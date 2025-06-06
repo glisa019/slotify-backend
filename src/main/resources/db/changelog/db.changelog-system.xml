@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
   <changeSet id="create-tenant-table" author="nikola">
     <createTable tableName="tenant" schemaName="system">
-      <column name="id" type="UUID">
+      <column name="tenant_id" type="UUID">
         <constraints primaryKey="true" nullable="false"/>
       </column>
       <column name="name" type="VARCHAR(255)">
@@ -30,7 +30,7 @@
   </changeSet>
   <changeSet id="create-admin-table" author="nikola">
     <createTable tableName="admin" schemaName="system">
-      <column name="id" type="UUID">
+      <column name="admin_id" type="UUID">
         <constraints primaryKey="true" nullable="false"/>
       </column>
       <column name="first_name" type="VARCHAR(255)">
