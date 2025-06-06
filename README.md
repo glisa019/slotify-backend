@@ -24,6 +24,10 @@ Several settings can be provided either via environment variables or by editing 
 - `STRIPE_API_SECRET` (`stripe.api.secret`)
 - `STRIPE_API_PUBLIC` (`stripe.api.public`)
 - `STRIPE_PRICE_ID` (`stripe.price.id`)
+- `DB_URL` (`spring.datasource.url`)
+- `DB_USERNAME` (`spring.datasource.username`)
+- `DB_PASSWORD` (`spring.datasource.password`)
+- `DB_DRIVER` (`spring.datasource.driver-class-name`)
 
 These values configure JWT signing and Stripe integration.
 
