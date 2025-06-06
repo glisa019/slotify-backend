@@ -24,10 +24,13 @@ public class HibernateMultiTenancyConfig {
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+            DataSource dataSource,
             MultiTenantConnectionProvider multiTenantConnectionProvider,
             CurrentTenantIdentifierResolver tenantIdentifierResolver) {
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
-        factoryBean.setPackagesToScan("com.myslotify.slotify"); // Adjust package as needed
+        factoryBean.setDataSource(dataSource);
+        factoryBean.setPackagesToScan("com.myslotify.slotify");
+        factoryBean.setJpaVendorAdapter(new org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter());
         factoryBean.setJpaProperties(jpaProperties(multiTenantConnectionProvider, tenantIdentifierResolver));
         return factoryBean;
     }
