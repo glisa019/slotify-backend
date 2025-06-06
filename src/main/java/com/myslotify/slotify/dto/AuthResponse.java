@@ -1,6 +1,6 @@
 package com.myslotify.slotify.dto;
 
-import com.myslotify.slotify.entity.User;
+import com.myslotify.slotify.entity.BaseAccount;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -9,5 +9,5 @@ import lombok.Data;
 public class AuthResponse {
     public String message;
     public String token;
-    public User user;
+    public BaseAccount account;
 }

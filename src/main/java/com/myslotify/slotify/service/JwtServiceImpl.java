@@ -1,8 +1,9 @@
 package com.myslotify.slotify.service;
 
 
-import com.myslotify.slotify.entity.User;
+import com.myslotify.slotify.entity.BaseAccount;
 import com.myslotify.slotify.entity.Admin;
+import com.myslotify.slotify.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -24,20 +25,10 @@ public class JwtServiceImpl implements JwtService {
         this.secretKey = secretKey;
     }
 
-    public String generateToken(User user) {
+    public String generateToken(BaseAccount account) {
         return Jwts.builder()
-                .setSubject(user.getEmail())
-                .claim("role", user.getRole().name())
-                .setIssuedAt(new Date())
-                .setExpiration(Date.from(Instant.now().plus(Duration.ofHours(12))))
-                .signWith(getKey())
-                .compact();
-    }
-
-    public String generateToken(Admin admin) {
-        return Jwts.builder()
-                .setSubject(admin.getEmail())
-                .claim("role", admin.getRole().name())
+                .setSubject(account.getEmail())
+                .claim("role", account instanceof Admin ? ((Admin) account).getRole().name() : ((User) account).getRole().name())
                 .setIssuedAt(new Date())
                 .setExpiration(Date.from(Instant.now().plus(Duration.ofHours(12))))
                 .signWith(getKey())
@@ -64,11 +55,7 @@ public class JwtServiceImpl implements JwtService {
                 .getBody();
     }
 
-    public boolean isTokenValid(String token, User user) {
-        return extractEmail(token).equals(user.getEmail());
-    }
-
-    public boolean isTokenValid(String token, Admin admin) {
-        return extractEmail(token).equals(admin.getEmail());
+    public boolean isTokenValid(String token, BaseAccount account) {
+        return extractEmail(token).equals(account.getEmail());
     }
 }
