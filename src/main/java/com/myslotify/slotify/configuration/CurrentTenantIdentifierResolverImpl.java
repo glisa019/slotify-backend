@@ -10,8 +10,8 @@ public class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentif
     public String resolveCurrentTenantIdentifier() {
         // Retrieve tenant identifier from the context (e.g., a ThreadLocal, HTTP header, etc.)
         String tenantId = TenantContext.getCurrentTenant();
-        if (tenantId == null) {
-            throw new HibernateException("Tenant identifier not found");
+        if (tenantId == null || tenantId.isBlank()) {
+            return "system";
         }
         return tenantId;
     }

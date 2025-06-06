@@ -2,6 +2,7 @@ package com.myslotify.slotify.service;
 
 
 import com.myslotify.slotify.entity.User;
+import com.myslotify.slotify.entity.Admin;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -33,6 +34,16 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
+    public String generateToken(Admin admin) {
+        return Jwts.builder()
+                .setSubject(admin.getEmail())
+                .claim("role", admin.getRole().name())
+                .setIssuedAt(new Date())
+                .setExpiration(Date.from(Instant.now().plus(Duration.ofHours(12))))
+                .signWith(getKey())
+                .compact();
+    }
+
     private Key getKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
@@ -55,5 +66,9 @@ public class JwtServiceImpl implements JwtService {
 
     public boolean isTokenValid(String token, User user) {
         return extractEmail(token).equals(user.getEmail());
+    }
+
+    public boolean isTokenValid(String token, Admin admin) {
+        return extractEmail(token).equals(admin.getEmail());
     }
 }
