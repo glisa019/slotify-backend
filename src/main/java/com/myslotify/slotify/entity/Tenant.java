@@ -22,7 +22,7 @@ public class Tenant {
     @Column(nullable = false)
     private SubscriptionStatus subscriptionStatus;
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User tenantAdmin;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -17,9 +17,7 @@
       <column name="schema_name" type="VARCHAR(255)" >
         <constraints unique="true" nullable="false"/>
       </column>
-      <column name="user_id" type="UUID">
-        <constraints nullable="false"/>
-      </column>
+      <column name="user_id" type="UUID"/>
       <column name="created_at" type="TIMESTAMP">
         <constraints nullable="false"/>
       </column>
