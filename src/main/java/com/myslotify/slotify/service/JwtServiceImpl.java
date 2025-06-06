@@ -17,8 +17,11 @@ import java.util.Date;
 @Service
 public class JwtServiceImpl implements JwtService {
 
-    @Value("${app.jwt.secret}")
-    private static String SECRET_KEY;
+    private final String secretKey;
+
+    public JwtServiceImpl(@Value("${app.jwt.secret}") String secretKey) {
+        this.secretKey = secretKey;
+    }
 
     public String generateToken(User user) {
         return Jwts.builder()
@@ -31,7 +34,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private Key getKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
     public String extractEmail(String token) {
