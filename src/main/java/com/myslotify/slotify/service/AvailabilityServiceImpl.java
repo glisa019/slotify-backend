@@ -1,6 +1,5 @@
 package com.myslotify.slotify.service;
 
-import org.springframework.stereotype.Service;
 import com.myslotify.slotify.dto.CreateAvailabilityRequest;
 import com.myslotify.slotify.entity.*;
 import com.myslotify.slotify.repository.EmployeeAvailabilityRepository;
@@ -14,7 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
-@Service
+@org.springframework.stereotype.Service
 public class AvailabilityServiceImpl implements AvailabilityService {
 
     @Autowired
