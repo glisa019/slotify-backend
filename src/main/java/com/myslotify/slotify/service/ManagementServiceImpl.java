@@ -29,6 +29,7 @@ public class ManagementServiceImpl implements ManagementService {
         Service service = new Service();
         service.setServiceId(UUID.randomUUID());
         service.setName(request.getName());
+        service.setDescription(request.getDescription());
         service.setDuration(request.getDuration());
         service.setPrice(request.getPrice());
 
@@ -38,6 +39,7 @@ public class ManagementServiceImpl implements ManagementService {
     public Service updateService(UUID id, UpdateServiceRequest request) {
         Service service = getService(id);
         service.setName(request.getName());
+        service.setDescription(request.getDescription());
         service.setDuration(request.getDuration());
         service.setPrice(request.getPrice());
         return serviceRepository.save(service);
