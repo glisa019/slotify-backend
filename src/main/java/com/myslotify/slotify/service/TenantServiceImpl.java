@@ -30,6 +30,7 @@ public class TenantServiceImpl implements TenantService {
     @Autowired
     private StripeService stripeService;
 
+    @Override
     public Tenant createTenant(TenantRequest request) {
         Tenant tenant = new Tenant();
         tenant.setName(request.getName());
@@ -78,14 +79,17 @@ public class TenantServiceImpl implements TenantService {
         }
     }
 
+    @Override
     public List<Tenant> getAllTenants() {
         return tenantRepository.findAll();
     }
 
+    @Override
     public Tenant getTenantById(UUID id) {
         return tenantRepository.findById(id).orElseThrow(() -> new RuntimeException("Tenant not found"));
     }
 
+    @Override
     public void deleteTenant(UUID id) {
         tenantRepository.deleteById(id);
     }
