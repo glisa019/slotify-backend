@@ -6,6 +6,7 @@ import com.myslotify.slotify.entity.*;
 import com.myslotify.slotify.repository.EmployeeAvailabilityRepository;
 import com.myslotify.slotify.repository.EmployeeRepository;
 import com.myslotify.slotify.repository.TimeSlotRepository;
+import com.myslotify.slotify.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 
@@ -24,6 +25,9 @@ public class AvailabilityServiceImpl implements AvailabilityService {
 
     @Autowired
     private TimeSlotRepository timeSlotRepository;
+
+    @Autowired
+    private ServiceRepository serviceRepository;
 
     private Employee getCurrentEmployee(Authentication authentication) {
         String email = authentication.getName();
@@ -54,10 +58,14 @@ public class AvailabilityServiceImpl implements AvailabilityService {
             availability.setEmployee(employee);
             availability = availabilityRepository.save(availability);
 
-            int intervalMinutes = Arrays.stream(Interval.values())
+            int intervalMinutes = serviceRepository.findAll().stream()
+                    .map(Service::getDuration)
                     .mapToInt(Interval::getMinutes)
                     .min()
-                    .orElse(15);
+                    .orElse(Arrays.stream(Interval.values())
+                            .mapToInt(Interval::getMinutes)
+                            .min()
+                            .orElse(15));
 
             List<TimeSlot> timeSlots = new ArrayList<>();
             LocalTime current = request.getShiftStart();
