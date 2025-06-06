@@ -1,5 +1,6 @@
 package com.myslotify.slotify.service;
 
+import com.myslotify.slotify.dto.TenantRequest;
 import com.myslotify.slotify.entity.Tenant;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +10,7 @@ import java.util.UUID;
 @Service
 public interface TenantService {
 
-    Tenant createTenant(String name, String schemaName);
+    Tenant createTenant(TenantRequest request);
 
     List<Tenant> getAllTenants();
 
