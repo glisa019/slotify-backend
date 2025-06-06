@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
   <changeSet id="init-tenant-schema" author="nikola">
     <createTable tableName="user">
-      <column name="id" type="UUID">
+      <column name="user_id" type="UUID">
         <constraints primaryKey="true" nullable="false"/>
       </column>
       <column name="first_name" type="VARCHAR(255)">
@@ -14,19 +14,22 @@
       <column name="email" type="VARCHAR(255)">
         <constraints nullable="false" unique="true"/>
       </column>
+      <column name="phone" type="VARCHAR(255)">
+        <constraints nullable="false" unique="true"/>
+      </column>
       <column name="password" type="VARCHAR(255)">
         <constraints nullable="false"/>
       </column>
       <column name="role" type="VARCHAR(50)">
         <constraints nullable="false"/>
       </column>
-      <column name="passwordResetRequired" type="BOOLEAN">
+      <column name="password_reset_required" type="BOOLEAN">
         <constraints nullable="false"/>
       </column>
     </createTable>
 
     <createTable tableName="service">
-      <column name="id" type="UUID">
+      <column name="service_id" type="UUID">
         <constraints primaryKey="true" nullable="false"/>
       </column>
       <column name="name" type="VARCHAR(255)">
@@ -35,7 +38,7 @@
       <column name="description" type="VARCHAR(255)">
         <constraints nullable="false"/>
       </column>
-      <column name="duration" type="INT">
+      <column name="duration" type="VARCHAR(50)">
         <constraints nullable="false"/>
       </column>
       <column name="price" type="DECIMAL(10,2)">
@@ -43,7 +46,7 @@
       </column>
     </createTable>
     <createTable tableName="employee">
-      <column name="id" type="UUID">
+      <column name="employee_id" type="UUID">
         <constraints primaryKey="true" nullable="false"/>
       </column>
       <column name="user_id" type="UUID">
@@ -51,13 +54,21 @@
       </column>
     </createTable>
     <createTable tableName="employee_availability">
-      <column name="id" type="UUID">
+      <column name="availability_id" type="UUID">
         <constraints primaryKey="true" nullable="false"/>
       </column>
       <column name="employee_id" type="UUID">
         <constraints nullable="false"/>
       </column>
-      <column name="day_of_week" type="VARCHAR(10)">
+      <column name="date" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <createTable tableName="time_slot">
+      <column name="slot_id" type="UUID">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="availability_id" type="UUID">
         <constraints nullable="false"/>
       </column>
       <column name="start_time" type="TIME">
@@ -66,27 +77,13 @@
       <column name="end_time" type="TIME">
         <constraints nullable="false"/>
       </column>
-    </createTable>
-    <createTable tableName="time_slot">
-      <column name="id" type="UUID">
-        <constraints primaryKey="true" nullable="false"/>
-      </column>
-      <column name="employee_id" type="UUID">
-        <constraints nullable="false"/>
-      </column>
-      <column name="start_time" type="TIMESTAMP">
-        <constraints nullable="false"/>
-      </column>
-      <column name="end_time" type="TIMESTAMP">
-        <constraints nullable="false"/>
-      </column>
       <column name="status" type="VARCHAR(50)">
         <constraints nullable="false"/>
       </column>
       <column name="appointment_id" type="UUID"/>
     </createTable>
     <createTable tableName="appointment">
-      <column name="id" type="UUID">
+      <column name="appointment_id" type="UUID">
         <constraints primaryKey="true" nullable="false"/>
       </column>
       <column name="employee_id" type="UUID">
@@ -98,7 +95,7 @@
       <column name="service_id" type="UUID">
         <constraints nullable="false"/>
       </column>
-      <column name="start_time" type="TIMESTAMP">
+      <column name="appointment_time" type="TIMESTAMP">
         <constraints nullable="false"/>
       </column>
       <column name="status" type="VARCHAR(50)">
