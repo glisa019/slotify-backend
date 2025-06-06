@@ -8,7 +8,6 @@ public class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentif
 
     @Override
     public String resolveCurrentTenantIdentifier() {
-        // Retrieve tenant identifier from the context (e.g., a ThreadLocal, HTTP header, etc.)
         String tenantId = TenantContext.getCurrentTenant();
         if (tenantId == null || tenantId.isBlank()) {
             return "system";
