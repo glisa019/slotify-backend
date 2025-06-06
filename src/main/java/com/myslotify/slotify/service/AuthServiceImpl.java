@@ -26,6 +26,7 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private JwtService jwtService;
 
+    @Override
     public AuthResponse login(LoginRequest request) {
         if (TenantContext.getCurrentTenant() == null) {
             Admin admin = adminRepository.findByEmail(request.getEmail())
@@ -36,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
             }
 
             String token = jwtService.generateToken(admin);
-            return new AuthResponse("Login successful", token);
+            return new AuthResponse("Login successful", token, admin);
         }
 
         User user = userRepository.findByEmail(request.getEmail())
@@ -52,9 +53,10 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtService.generateToken(user);
 
-        return new AuthResponse("Login successful", token);
+        return new AuthResponse("Login successful", token, user);
     }
 
+    @Override
     public AuthResponse resetPassword(ResetPasswordRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -68,6 +70,6 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         String token = jwtService.generateToken(user);
-        return new AuthResponse("Password reset successful", token);
+        return new AuthResponse("Password reset successful", token, user);
     }
 }

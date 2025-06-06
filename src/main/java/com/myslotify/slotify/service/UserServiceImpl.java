@@ -56,7 +56,6 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = new User();
-        user.setUserId(UUID.randomUUID());
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setPhone(request.getPhone());
@@ -73,7 +72,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public Employee createEmployee(CreateUserRequest request) {
-        User user = createUser(request).getUser();
+        User user = (User) createUser(request).getAccount();
 
         Employee employee = new Employee();
         employee.setUser(user);
