@@ -32,6 +32,7 @@ public class TenantController {
         return ResponseEntity.ok(tenantService.getTenantById(id));
     }
 
+    @PreAuthorize("hasRole('TENANT_ADMIN')")
     @PostMapping
     public ResponseEntity<TenantResponse> createTenant(@RequestBody TenantRequest request) {
         return ResponseEntity.ok(tenantService.createTenant(request));
