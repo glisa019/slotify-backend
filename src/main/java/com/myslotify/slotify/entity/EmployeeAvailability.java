@@ -15,7 +15,7 @@ public class EmployeeAvailability {
     private UUID availabilityId;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
     @Column(nullable = false)
