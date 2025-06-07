@@ -2,7 +2,6 @@ package com.myslotify.slotify.service;
 
 import com.myslotify.slotify.entity.Appointment;
 import com.myslotify.slotify.repository.AppointmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +12,14 @@ import java.util.UUID;
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
 
-    @Autowired
-    private AppointmentRepository appointmentRepository;
+    private final AppointmentRepository appointmentRepository;
+    private final NotificationService notificationService;
 
-    @Autowired
-    private NotificationService notificationService;
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
+                                  NotificationService notificationService) {
+        this.appointmentRepository = appointmentRepository;
+        this.notificationService = notificationService;
+    }
 
     @Override
     public Appointment getAppointment(UUID id) {

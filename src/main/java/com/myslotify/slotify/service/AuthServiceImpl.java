@@ -8,23 +8,25 @@ import com.myslotify.slotify.entity.User;
 import com.myslotify.slotify.repository.AdminRepository;
 import com.myslotify.slotify.repository.UserRepository;
 import com.myslotify.slotify.util.TenantContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthServiceImpl implements AuthService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    @Autowired
-    private AdminRepository adminRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtService jwtService;
+    public AuthServiceImpl(UserRepository userRepository,
+                           AdminRepository adminRepository,
+                           PasswordEncoder passwordEncoder,
+                           JwtService jwtService) {
+        this.userRepository = userRepository;
+        this.adminRepository = adminRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+    }
 
     @Override
     public AuthResponse login(LoginRequest request) {

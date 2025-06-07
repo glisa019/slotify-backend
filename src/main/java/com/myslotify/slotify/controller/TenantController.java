@@ -4,7 +4,6 @@ import com.myslotify.slotify.dto.TenantRequest;
 import com.myslotify.slotify.dto.TenantResponse;
 import com.myslotify.slotify.entity.Tenant;
 import com.myslotify.slotify.service.TenantService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +14,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/tenants")
 public class TenantController {
-    @Autowired
-    private TenantService tenantService;
+    private final TenantService tenantService;
+
+    public TenantController(TenantService tenantService) {
+        this.tenantService = tenantService;
+    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping

@@ -6,7 +6,6 @@ import com.myslotify.slotify.dto.UpdateUserRequest;
 import com.myslotify.slotify.entity.Employee;
 import com.myslotify.slotify.entity.User;
 import com.myslotify.slotify.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +17,11 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PreAuthorize("hasRole('TENANT_ADMIN')")
     @GetMapping("/employee")

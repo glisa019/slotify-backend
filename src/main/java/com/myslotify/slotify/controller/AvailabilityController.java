@@ -3,7 +3,6 @@ package com.myslotify.slotify.controller;
 import com.myslotify.slotify.dto.CreateAvailabilityRequest;
 import com.myslotify.slotify.entity.EmployeeAvailability;
 import com.myslotify.slotify.service.AvailabilityService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -16,8 +15,11 @@ import java.util.UUID;
 @RequestMapping("/api/availability")
 public class AvailabilityController {
 
-    @Autowired
-    private AvailabilityService availabilityService;
+    private final AvailabilityService availabilityService;
+
+    public AvailabilityController(AvailabilityService availabilityService) {
+        this.availabilityService = availabilityService;
+    }
 
     @GetMapping
     @PreAuthorize("hasRole('EMPLOYEE')")
