@@ -8,4 +8,7 @@ import java.util.UUID;
 
 @Repository
 public interface TimeSlotRepository extends JpaRepository<TimeSlot, UUID> {
+    TimeSlot findByAppointmentAppointmentId(UUID appointmentId);
+
+    java.util.List<TimeSlot> findAllByAppointmentAppointmentId(UUID appointmentId);
 }
