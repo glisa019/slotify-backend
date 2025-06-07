@@ -1,6 +1,7 @@
 package com.myslotify.slotify.controller;
 
 import com.myslotify.slotify.dto.TenantRequest;
+import com.myslotify.slotify.dto.TenantResponse;
 import com.myslotify.slotify.entity.Tenant;
 import com.myslotify.slotify.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,8 @@ public class TenantController {
     }
 
     @PostMapping
-    public ResponseEntity<Tenant> createTenant(@RequestBody TenantRequest request) {
-        Tenant tenant = tenantService.createTenant(request);
-        return ResponseEntity.ok(tenant);
+    public ResponseEntity<TenantResponse> createTenant(@RequestBody TenantRequest request) {
+        return ResponseEntity.ok(tenantService.createTenant(request));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
