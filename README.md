@@ -51,6 +51,8 @@ Several settings can be provided either via environment variables or by editing 
 - `STRIPE_API_SECRET` (`stripe.api.secret`)
 - `STRIPE_API_PUBLIC` (`stripe.api.public`)
 - `STRIPE_PRICE_ID` (`stripe.price.id`)
+- `STRIPE_SUCCESS_URL` (`stripe.success.url`)
+- `STRIPE_CANCEL_URL` (`stripe.cancel.url`)
 - `DB_URL` (`spring.datasource.url`)
 - `DB_USERNAME` (`spring.datasource.username`)
 - `DB_PASSWORD` (`spring.datasource.password`)

@@ -1,6 +1,7 @@
 package com.myslotify.slotify.service;
 
 import com.myslotify.slotify.dto.TenantRequest;
+import com.myslotify.slotify.dto.TenantResponse;
 import com.myslotify.slotify.entity.Employee;
 import com.myslotify.slotify.entity.SubscriptionStatus;
 import com.myslotify.slotify.entity.Tenant;
@@ -9,6 +10,8 @@ import jakarta.transaction.Transactional;
 import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -30,8 +33,17 @@ public class TenantServiceImpl implements TenantService {
     @Autowired
     private StripeService stripeService;
 
+    @Value("${stripe.success.url}")
+    private String successUrl;
+
+    @Value("${stripe.cancel.url}")
+    private String cancelUrl;
+
     @Override
-    public Tenant createTenant(TenantRequest request) {
+    public TenantResponse createTenant(TenantRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication != null ? authentication.getName() : null;
+
         Tenant tenant = new Tenant();
         tenant.setName(request.getName());
         tenant.setSchemaName(request.getSchemaName());
@@ -41,7 +53,16 @@ public class TenantServiceImpl implements TenantService {
 
         tenantRepository.save(tenant);
 
-        return tenant;
+        String sessionUrl = null;
+        try {
+            if (email != null) {
+                sessionUrl = stripeService.createSubscriptionSession(email, successUrl, cancelUrl);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create Stripe session", e);
+        }
+
+        return new TenantResponse(tenant, sessionUrl);
     }
 
     @Transactional
