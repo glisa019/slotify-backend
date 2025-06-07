@@ -5,8 +5,11 @@ import com.myslotify.slotify.dto.LoginRequest;
 import com.myslotify.slotify.entity.Admin;
 import com.myslotify.slotify.entity.Role;
 import com.myslotify.slotify.entity.User;
+import com.myslotify.slotify.entity.SubscriptionStatus;
+import com.myslotify.slotify.entity.Tenant;
 import com.myslotify.slotify.repository.AdminRepository;
 import com.myslotify.slotify.repository.UserRepository;
+import com.myslotify.slotify.repository.TenantRepository;
 import com.myslotify.slotify.util.TenantContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +30,8 @@ class AuthServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private AdminRepository adminRepository;
+    @Mock
+    private TenantRepository tenantRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
@@ -64,6 +69,10 @@ class AuthServiceImplTest {
         request.email = "user@example.com";
         request.password = "pass";
 
+        Tenant tenant = new Tenant();
+        tenant.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
+        when(tenantRepository.findBySchemaName("tenant1")).thenReturn(Optional.of(tenant));
+
         User user = new User();
         user.setPassword("hash");
         user.setRole(Role.EMPLOYEE);
@@ -74,5 +83,25 @@ class AuthServiceImplTest {
         AuthResponse response = authService.login(request);
         assertEquals("token", response.getToken());
         assertEquals(user, response.getAccount());
+    }
+
+    @Test
+    void loginFailsWhenTenantInactive() {
+        TenantContext.setCurrentTenant("tenant1");
+        LoginRequest request = new LoginRequest();
+        request.email = "user@example.com";
+        request.password = "pass";
+
+        Tenant tenant = new Tenant();
+        tenant.setSubscriptionStatus(SubscriptionStatus.INACTIVE);
+        when(tenantRepository.findBySchemaName("tenant1")).thenReturn(Optional.of(tenant));
+
+        User user = new User();
+        user.setPassword("hash");
+        user.setRole(Role.EMPLOYEE);
+        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("pass", "hash")).thenReturn(true);
+
+        assertThrows(RuntimeException.class, () -> authService.login(request));
     }
 }
