@@ -59,6 +59,17 @@ public class TenantServiceImpl implements TenantService {
         tenant.setName(request.getName());
         tenant.setSchemaName(request.getSchemaName());
         tenant.setDescription(request.getDescription());
+        tenant.setMotto(request.getMotto());
+        tenant.setAddress(request.getAddress());
+        tenant.setPhone(request.getPhone());
+        tenant.setTiktok(request.getTiktok());
+        tenant.setInstagram(request.getInstagram());
+        tenant.setTextColour(request.getTextColour());
+        tenant.setBackgroundColour(request.getBackgroundColour());
+        tenant.setBorderColour(request.getBorderColour());
+        tenant.setFont(request.getFont());
+        tenant.setLogo(request.getLogo());
+        tenant.setCoverPicture(request.getCoverPicture());
         tenant.setCreatedAt(LocalDateTime.now());
         tenant.setSubscriptionStatus(SubscriptionStatus.PENDING);
 
