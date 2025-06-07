@@ -6,7 +6,6 @@ import com.myslotify.slotify.repository.EmployeeAvailabilityRepository;
 import com.myslotify.slotify.repository.EmployeeRepository;
 import com.myslotify.slotify.repository.TimeSlotRepository;
 import com.myslotify.slotify.repository.ServiceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 
 import java.time.LocalDate;
@@ -16,17 +15,20 @@ import java.util.*;
 @org.springframework.stereotype.Service
 public class AvailabilityServiceImpl implements AvailabilityService {
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
+    private final EmployeeAvailabilityRepository availabilityRepository;
+    private final TimeSlotRepository timeSlotRepository;
+    private final ServiceRepository serviceRepository;
 
-    @Autowired
-    private EmployeeAvailabilityRepository availabilityRepository;
-
-    @Autowired
-    private TimeSlotRepository timeSlotRepository;
-
-    @Autowired
-    private ServiceRepository serviceRepository;
+    public AvailabilityServiceImpl(EmployeeRepository employeeRepository,
+                                   EmployeeAvailabilityRepository availabilityRepository,
+                                   TimeSlotRepository timeSlotRepository,
+                                   ServiceRepository serviceRepository) {
+        this.employeeRepository = employeeRepository;
+        this.availabilityRepository = availabilityRepository;
+        this.timeSlotRepository = timeSlotRepository;
+        this.serviceRepository = serviceRepository;
+    }
 
     private Employee getCurrentEmployee(Authentication authentication) {
         String email = authentication.getName();

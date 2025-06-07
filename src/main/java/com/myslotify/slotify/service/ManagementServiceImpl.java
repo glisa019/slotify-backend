@@ -4,7 +4,6 @@ import com.myslotify.slotify.dto.CreateServiceRequest;
 import com.myslotify.slotify.dto.UpdateServiceRequest;
 import com.myslotify.slotify.entity.Service;
 import com.myslotify.slotify.repository.ServiceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,8 +11,11 @@ import java.util.UUID;
 @org.springframework.stereotype.Service
 public class ManagementServiceImpl implements ManagementService {
 
-    @Autowired
-    private ServiceRepository serviceRepository;
+    private final ServiceRepository serviceRepository;
+
+    public ManagementServiceImpl(ServiceRepository serviceRepository) {
+        this.serviceRepository = serviceRepository;
+    }
 
 
     public List<Service> getAllServices() {

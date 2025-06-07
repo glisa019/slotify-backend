@@ -4,7 +4,6 @@ import com.myslotify.slotify.dto.CreateServiceRequest;
 import com.myslotify.slotify.dto.UpdateServiceRequest;
 import com.myslotify.slotify.entity.Service;
 import com.myslotify.slotify.service.ManagementService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +14,11 @@ import java.util.UUID;
 @RequestMapping("/api/manage")
 public class ManagementController {
 
-    @Autowired
-    private ManagementService managementService;
+    private final ManagementService managementService;
+
+    public ManagementController(ManagementService managementService) {
+        this.managementService = managementService;
+    }
 
     @PostMapping("/services")
     public ResponseEntity<Service> createService(@RequestBody CreateServiceRequest request) {

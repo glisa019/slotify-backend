@@ -8,7 +8,6 @@ import com.myslotify.slotify.entity.Role;
 import com.myslotify.slotify.entity.User;
 import com.myslotify.slotify.repository.EmployeeRepository;
 import com.myslotify.slotify.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,20 +18,23 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final EmployeeRepository employeeRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final NotificationService notificationService;
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    private NotificationService notificationService;
+    public UserServiceImpl(UserRepository userRepository,
+                           EmployeeRepository employeeRepository,
+                           PasswordEncoder passwordEncoder,
+                           JwtService jwtService,
+                           NotificationService notificationService) {
+        this.userRepository = userRepository;
+        this.employeeRepository = employeeRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+        this.notificationService = notificationService;
+    }
 
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();

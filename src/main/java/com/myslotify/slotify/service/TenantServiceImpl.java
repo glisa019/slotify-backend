@@ -20,18 +20,27 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @Service
 public class TenantServiceImpl implements TenantService {
 
-    @Autowired
-    private DataSource dataSource;
-    @Autowired
-    private TenantRepository tenantRepository;
-    @Autowired
-    private SpringLiquibase springLiquibase;
-    @Autowired
-    private StripeService stripeService;
+    private final DataSource dataSource;
+    private final TenantRepository tenantRepository;
+    private final SpringLiquibase springLiquibase;
+    private final StripeService stripeService;
+
+    private static final Pattern SCHEMA_PATTERN = Pattern.compile("[A-Za-z0-9_]+");
+
+    public TenantServiceImpl(DataSource dataSource,
+                             TenantRepository tenantRepository,
+                             SpringLiquibase springLiquibase,
+                             StripeService stripeService) {
+        this.dataSource = dataSource;
+        this.tenantRepository = tenantRepository;
+        this.springLiquibase = springLiquibase;
+        this.stripeService = stripeService;
+    }
 
     @Value("${stripe.success.url}")
     private String successUrl;
@@ -81,6 +90,9 @@ public class TenantServiceImpl implements TenantService {
     }
 
     private void createSchema(String schemaName) {
+        if (!SCHEMA_PATTERN.matcher(schemaName).matches()) {
+            throw new IllegalArgumentException("Invalid schema name");
+        }
         try (Connection connection = dataSource.getConnection()) {
             String createSchemaSql = "CREATE SCHEMA IF NOT EXISTS " + schemaName;
             connection.createStatement().execute(createSchemaSql);
