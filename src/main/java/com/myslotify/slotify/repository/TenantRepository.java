@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface TenantRepository extends JpaRepository<Tenant, UUID> {
     Optional<Tenant> findByName(String name);
+
+    Optional<Tenant> findBySchemaName(String schemaName);
 }
