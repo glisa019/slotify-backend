@@ -2,6 +2,7 @@ package com.myslotify.slotify.service;
 
 import com.myslotify.slotify.dto.CreateAvailabilityRequest;
 import com.myslotify.slotify.entity.EmployeeAvailability;
+import com.myslotify.slotify.entity.TimeSlot;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -16,4 +17,6 @@ public interface AvailabilityService {
     void deleteAvailability(UUID availabilityId, Authentication auth);
     void blockTimeSlot(UUID timeSlotId, Authentication auth);
     void unblockTimeSlot(UUID timeSlotId, Authentication auth);
+    List<TimeSlot> getAvailableTimeSlotsForEmployee(Authentication auth);
+    List<TimeSlot> getAvailableTimeSlotsForEmployee(UUID employeeId);
 }
