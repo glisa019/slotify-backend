@@ -142,7 +142,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     public List<TimeSlot> getAvailableTimeSlotsForEmployee(Authentication auth) {
         Employee employee = getCurrentEmployee(auth);
         return timeSlotRepository
-                .findAllByAvailabilityEmployeeEmployeeIdAndStatus(employee.getId(), SlotStatus.AVAILABLE);
+                .findAllByAvailabilityEmployeeIdAndStatus(employee.getId(), SlotStatus.AVAILABLE);
     }
 
     public List<TimeSlot> getAvailableTimeSlotsForEmployee(UUID employeeId) {
@@ -150,6 +150,6 @@ public class AvailabilityServiceImpl implements AvailabilityService {
             throw new RuntimeException("Employee not found");
         }
         return timeSlotRepository
-                .findAllByAvailabilityEmployeeEmployeeIdAndStatus(employeeId, SlotStatus.AVAILABLE);
+                .findAllByAvailabilityEmployeeIdAndStatus(employeeId, SlotStatus.AVAILABLE);
     }
 }
