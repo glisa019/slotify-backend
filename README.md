@@ -70,8 +70,10 @@ X-Tenant-ID: my_tenant
 
 The filter stores the tenant in a thread-local context so repositories and services can resolve the correct schema for the request.
 
+## Postman collection
+
+A Postman collection is provided to exercise the API. Import `Slotify.postman_collection.json` into Postman and update the environment variables for your host, tenant, and auth token.
 
 ## API documentation
 
 The project uses springdoc-openapi to expose Swagger UI. Once the application is running, navigate to [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) to explore available endpoints. The raw OpenAPI spec can be retrieved from [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs).
-

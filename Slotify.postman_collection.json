@@ -1,0 +1,242 @@
+{
+  "info": {
+    "name": "Slotify API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "tenant", "value": "tenant1" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Tenant-ID", "value": "{{tenant}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "auth", "login" ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"pass\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Tenant-ID", "value": "{{tenant}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/reset-password",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "auth", "reset-password" ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"temporaryPassword\": \"temp\",\n  \"newPassword\": \"newPass\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tenants",
+      "item": [
+        {
+          "name": "Create Tenant",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tenants",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "tenants" ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tenant Name\",\n  \"schemaName\": \"tenant1\",\n  \"description\": \"Demo tenant\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Tenants",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tenants",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "tenants" ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Services",
+      "item": [
+        {
+          "name": "Create Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "X-Tenant-ID", "value": "{{tenant}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/manage/services",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "manage", "services" ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Consultation\",\n  \"duration\": \"MINUTES_30\",\n  \"description\": \"Initial consult\",\n  \"price\": 50\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Services",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "X-Tenant-ID", "value": "{{tenant}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/manage/services",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "manage", "services" ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Tenant-ID", "value": "{{tenant}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/user",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "user" ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"email\": \"jane@example.com\",\n  \"phone\": \"123456\",\n  \"password\": \"pass\",\n  \"role\": \"CUSTOMER\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "X-Tenant-ID", "value": "{{tenant}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/user",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "user" ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Availability",
+      "item": [
+        {
+          "name": "Create Availability",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "X-Tenant-ID", "value": "{{tenant}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/availability",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "availability" ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dates\": [\"2024-01-01\"],\n  \"shiftStart\": \"09:00\",\n  \"shiftEnd\": \"17:00\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Availability",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "X-Tenant-ID", "value": "{{tenant}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/availability",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "availability" ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Slots",
+      "item": [
+        {
+          "name": "Get Employee Slots",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-Tenant-ID", "value": "{{tenant}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/slots/{{employeeId}}",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "slots", "{{employeeId}}" ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
