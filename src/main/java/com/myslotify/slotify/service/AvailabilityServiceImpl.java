@@ -2,6 +2,9 @@ package com.myslotify.slotify.service;
 
 import com.myslotify.slotify.dto.CreateAvailabilityRequest;
 import com.myslotify.slotify.entity.*;
+import com.myslotify.slotify.exception.BadRequestException;
+import com.myslotify.slotify.exception.NotFoundException;
+import com.myslotify.slotify.exception.UnauthorizedException;
 import com.myslotify.slotify.repository.EmployeeAvailabilityRepository;
 import com.myslotify.slotify.repository.EmployeeRepository;
 import com.myslotify.slotify.repository.TimeSlotRepository;
@@ -33,7 +36,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     private Employee getCurrentEmployee(Authentication authentication) {
         String email = authentication.getName();
         return employeeRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new NotFoundException("Employee not found"));
     }
 
     public List<EmployeeAvailability> getAvailabilityForEmployee(Authentication auth) {
@@ -50,7 +53,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         for(LocalDate date : request.getDates()) {
 
             if (availabilityRepository.existsByEmployeeAndDate(employee, date)) {
-                throw new RuntimeException("Availability for this date already exists");
+                throw new BadRequestException("Availability for this date already exists");
             }
 
             EmployeeAvailability availability = new EmployeeAvailability();
@@ -94,10 +97,10 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     public void deleteAvailability(UUID availabilityId, Authentication auth) {
         Employee employee = getCurrentEmployee(auth);
         EmployeeAvailability availability = availabilityRepository.findById(availabilityId)
-                .orElseThrow(() -> new RuntimeException("Availability not found"));
+                .orElseThrow(() -> new NotFoundException("Availability not found"));
 
         if (!availability.getEmployee().getId().equals(employee.getId())) {
-            throw new RuntimeException("Unauthorized to delete this availability");
+            throw new UnauthorizedException("Unauthorized to delete this availability");
         }
 
         timeSlotRepository.deleteAll(availability.getTimeSlots());
@@ -107,14 +110,14 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     public void blockTimeSlot(UUID timeSlotId, Authentication auth) {
         Employee employee = getCurrentEmployee(auth);
         TimeSlot slot = timeSlotRepository.findById(timeSlotId)
-                .orElseThrow(() -> new RuntimeException("Time slot not found"));
+                .orElseThrow(() -> new NotFoundException("Time slot not found"));
 
         if (!slot.getAvailability().getEmployee().getId().equals(employee.getId())) {
-            throw new RuntimeException("Unauthorized to block this time slot");
+            throw new UnauthorizedException("Unauthorized to block this time slot");
         }
 
         if (slot.getStatus() == SlotStatus.SCHEDULED) {
-            throw new RuntimeException("Cannot block a scheduled time slot");
+            throw new BadRequestException("Cannot block a scheduled time slot");
         }
 
         slot.setStatus(SlotStatus.BLOCKED);
@@ -125,14 +128,14 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     public void unblockTimeSlot(UUID timeSlotId, Authentication auth) {
         Employee employee = getCurrentEmployee(auth);
         TimeSlot slot = timeSlotRepository.findById(timeSlotId)
-                .orElseThrow(() -> new RuntimeException("Time slot not found"));
+                .orElseThrow(() -> new NotFoundException("Time slot not found"));
 
         if (!slot.getAvailability().getEmployee().getId().equals(employee.getId())) {
-            throw new RuntimeException("Unauthorized to unblock this time slot");
+            throw new UnauthorizedException("Unauthorized to unblock this time slot");
         }
 
         if (slot.getStatus() != SlotStatus.BLOCKED) {
-            throw new RuntimeException("Only blocked time slots can be unblocked");
+            throw new BadRequestException("Only blocked time slots can be unblocked");
         }
 
         slot.setStatus(SlotStatus.AVAILABLE);
@@ -147,7 +150,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
 
     public List<TimeSlot> getAvailableTimeSlotsForEmployee(UUID employeeId) {
         if (!employeeRepository.existsById(employeeId)) {
-            throw new RuntimeException("Employee not found");
+            throw new NotFoundException("Employee not found");
         }
         return timeSlotRepository
                 .findAllByAvailabilityEmployeeIdAndStatus(employeeId, SlotStatus.AVAILABLE);

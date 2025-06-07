@@ -48,29 +48,50 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
-        String email = jwtService.extractEmail(token);
+        String email;
+        try {
+            email = jwtService.extractEmail(token);
+        } catch (Exception e) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             if (TenantContext.getCurrentTenant() == null) {
                 Admin admin = adminRepository.findByEmail(email).orElse(null);
-                if (admin != null && jwtService.isTokenValid(token, admin)) {
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                            admin, null, List.of(new SimpleGrantedAuthority("ROLE_" + admin.getRole().name())));
-                    SecurityContextHolder.getContext().setAuthentication(auth);
+                if (admin != null) {
+                    try {
+                        if (jwtService.isTokenValid(token, admin)) {
+                            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                                    admin, null, List.of(new SimpleGrantedAuthority("ROLE_" + admin.getRole().name())));
+                            SecurityContextHolder.getContext().setAuthentication(auth);
+                        }
+                    } catch (Exception ignored) {
+                    }
                 }
             } else {
                 User user = userRepository.findByEmail(email).orElse(null);
                 if (user == null) {
                     Employee employee = employeeRepository.findByEmail(email).orElse(null);
-                    if (employee != null && jwtService.isTokenValid(token, employee)) {
-                        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                                employee, null, List.of(new SimpleGrantedAuthority("ROLE_" + employee.getRole().name())));
-                        SecurityContextHolder.getContext().setAuthentication(auth);
+                    if (employee != null) {
+                        try {
+                            if (jwtService.isTokenValid(token, employee)) {
+                                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                                        employee, null, List.of(new SimpleGrantedAuthority("ROLE_" + employee.getRole().name())));
+                                SecurityContextHolder.getContext().setAuthentication(auth);
+                            }
+                        } catch (Exception ignored) {
+                        }
                     }
-                } else if (jwtService.isTokenValid(token, user)) {
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                            user, null, List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
-                    SecurityContextHolder.getContext().setAuthentication(auth);
+                } else {
+                    try {
+                        if (jwtService.isTokenValid(token, user)) {
+                            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                                    user, null, List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
+                            SecurityContextHolder.getContext().setAuthentication(auth);
+                        }
+                    } catch (Exception ignored) {
+                    }
                 }
             }
         }

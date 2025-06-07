@@ -1,6 +1,9 @@
 package com.myslotify.slotify.service;
 
 import com.myslotify.slotify.entity.*;
+import com.myslotify.slotify.exception.BadRequestException;
+import com.myslotify.slotify.exception.NotFoundException;
+import com.myslotify.slotify.exception.UnauthorizedException;
 import com.myslotify.slotify.repository.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -36,7 +39,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public Appointment getAppointment(UUID id) {
         return appointmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+                .orElseThrow(() -> new NotFoundException("Appointment not found"));
     }
 
     @Override
@@ -47,13 +50,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     private User getCurrentUser(Authentication auth) {
         String email = auth.getName();
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     private Employee getCurrentEmployee(Authentication auth) {
         String email = auth.getName();
         return employeeRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new NotFoundException("Employee not found"));
     }
 
     @Override
@@ -66,25 +69,25 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Appointment createAppointmentForCustomer(UUID slotId, UUID serviceId, UUID customerId, Authentication auth) {
         Employee employee = getCurrentEmployee(auth);
         TimeSlot slot = timeSlotRepository.findById(slotId)
-                .orElseThrow(() -> new RuntimeException("Time slot not found"));
+                .orElseThrow(() -> new NotFoundException("Time slot not found"));
         if (!slot.getAvailability().getEmployee().getId().equals(employee.getId())) {
-            throw new RuntimeException("Unauthorized to book this slot");
+            throw new UnauthorizedException("Unauthorized to book this slot");
         }
         User customer = userRepository.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new NotFoundException("Customer not found"));
         return createAppointmentInternal(slotId, serviceId, customer);
     }
 
     private Appointment createAppointmentInternal(UUID slotId, UUID serviceId, User customer) {
         TimeSlot slot = timeSlotRepository.findById(slotId)
-                .orElseThrow(() -> new RuntimeException("Time slot not found"));
+                .orElseThrow(() -> new NotFoundException("Time slot not found"));
 
         if (slot.getStatus() != SlotStatus.AVAILABLE) {
-            throw new RuntimeException("Time slot not available");
+            throw new BadRequestException("Time slot not available");
         }
 
         Service service = serviceRepository.findById(serviceId)
-                .orElseThrow(() -> new RuntimeException("Service not found"));
+                .orElseThrow(() -> new NotFoundException("Service not found"));
 
         long slotMinutes = java.time.Duration.between(slot.getStartTime(), slot.getEndTime()).toMinutes();
         int slotsNeeded = (int) Math.ceil(service.getDuration().getMinutes() / (double) slotMinutes);
@@ -93,7 +96,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         allSlots.sort(java.util.Comparator.comparing(TimeSlot::getStartTime));
         int index = allSlots.indexOf(slot);
         if (index < 0 || index + slotsNeeded > allSlots.size()) {
-            throw new RuntimeException("Not enough consecutive slots available");
+            throw new BadRequestException("Not enough consecutive slots available");
         }
 
         java.util.List<TimeSlot> toBook = new java.util.ArrayList<>();
@@ -101,7 +104,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         for (int i = 0; i < slotsNeeded; i++) {
             TimeSlot s = allSlots.get(index + i);
             if (s.getStatus() != SlotStatus.AVAILABLE || !s.getStartTime().equals(expected)) {
-                throw new RuntimeException("Required consecutive slots are not available");
+                throw new BadRequestException("Required consecutive slots are not available");
             }
             toBook.add(s);
             expected = s.getEndTime();
@@ -131,7 +134,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         User user = getCurrentUser(auth);
         Appointment appointment = getAppointment(appointmentId);
         if (!appointment.getCustomer().getId().equals(user.getId())) {
-            throw new RuntimeException("Unauthorized to cancel this appointment");
+            throw new UnauthorizedException("Unauthorized to cancel this appointment");
         }
         cancelAppointmentInternal(appointment);
     }
@@ -141,7 +144,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Employee employee = getCurrentEmployee(auth);
         Appointment appointment = getAppointment(appointmentId);
         if (!appointment.getEmployee().getId().equals(employee.getId())) {
-            throw new RuntimeException("Unauthorized to cancel this appointment");
+            throw new UnauthorizedException("Unauthorized to cancel this appointment");
         }
         cancelAppointmentInternal(appointment);
     }

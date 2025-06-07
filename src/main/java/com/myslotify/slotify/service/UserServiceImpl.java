@@ -6,6 +6,8 @@ import com.myslotify.slotify.dto.UpdateUserRequest;
 import com.myslotify.slotify.entity.Employee;
 import com.myslotify.slotify.entity.Role;
 import com.myslotify.slotify.entity.User;
+import com.myslotify.slotify.exception.BadRequestException;
+import com.myslotify.slotify.exception.NotFoundException;
 import com.myslotify.slotify.repository.EmployeeRepository;
 import com.myslotify.slotify.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
     public Employee getEmployee(UUID id) {
         return employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new NotFoundException("Employee not found"));
     }
 
     public List<User> getAllUsers() {
@@ -51,13 +53,13 @@ public class UserServiceImpl implements UserService {
 
     public User getUser(UUID id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     public AuthResponse createUser(CreateUserRequest request) {
         Optional<User> existing = userRepository.findByEmail(request.getEmail());
         if (existing.isPresent()) {
-            throw new RuntimeException("User already exists");
+            throw new BadRequestException("User already exists");
         }
 
         User user = new User();
@@ -79,7 +81,7 @@ public class UserServiceImpl implements UserService {
     public Employee createEmployee(CreateUserRequest request) {
         Optional<Employee> existing = employeeRepository.findByEmail(request.getEmail());
         if (existing.isPresent()) {
-            throw new RuntimeException("Employee already exists");
+            throw new BadRequestException("Employee already exists");
         }
 
         Employee employee = new Employee();
@@ -103,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
     public User updateUser(UUID id, UpdateUserRequest request) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());

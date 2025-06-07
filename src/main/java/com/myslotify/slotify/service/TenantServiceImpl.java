@@ -5,6 +5,8 @@ import com.myslotify.slotify.dto.TenantResponse;
 import com.myslotify.slotify.entity.Employee;
 import com.myslotify.slotify.entity.SubscriptionStatus;
 import com.myslotify.slotify.entity.Tenant;
+import com.myslotify.slotify.exception.BadRequestException;
+import com.myslotify.slotify.exception.NotFoundException;
 import com.myslotify.slotify.repository.TenantRepository;
 import jakarta.transaction.Transactional;
 import liquibase.integration.spring.SpringLiquibase;
@@ -68,7 +70,7 @@ public class TenantServiceImpl implements TenantService {
                 sessionUrl = stripeService.createSubscriptionSession(email, successUrl, cancelUrl);
             }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to create Stripe session", e);
+            throw new BadRequestException("Failed to create Stripe session", e);
         }
 
         return new TenantResponse(tenant, sessionUrl);
@@ -77,7 +79,7 @@ public class TenantServiceImpl implements TenantService {
     @Transactional
     public Tenant activateTenant(String name, String schemaName) {
         Tenant tenant = tenantRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Tenant not found"));
+                .orElseThrow(() -> new NotFoundException("Tenant not found"));
         tenant.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
 
         tenantRepository.save(tenant);
@@ -97,7 +99,7 @@ public class TenantServiceImpl implements TenantService {
             String createSchemaSql = "CREATE SCHEMA IF NOT EXISTS " + schemaName;
             connection.createStatement().execute(createSchemaSql);
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to create schema: " + schemaName, e);
+            throw new BadRequestException("Failed to create schema: " + schemaName, e);
         }
     }
 
@@ -108,7 +110,7 @@ public class TenantServiceImpl implements TenantService {
             springLiquibase.setChangeLog("classpath:db/changelog/db.changelog-tenant.xml");
             springLiquibase.afterPropertiesSet();
         } catch (Exception e) {
-            throw new RuntimeException("Failed to apply Liquibase changes for schema: " + schemaName, e);
+            throw new BadRequestException("Failed to apply Liquibase changes for schema: " + schemaName, e);
         }
     }
 
@@ -119,7 +121,7 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public Tenant getTenantById(UUID id) {
-        return tenantRepository.findById(id).orElseThrow(() -> new RuntimeException("Tenant not found"));
+        return tenantRepository.findById(id).orElseThrow(() -> new NotFoundException("Tenant not found"));
     }
 
     @Override
