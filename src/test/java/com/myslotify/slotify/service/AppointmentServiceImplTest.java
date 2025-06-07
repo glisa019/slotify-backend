@@ -54,7 +54,7 @@ class AppointmentServiceImplTest {
         user.setEmail("user@example.com");
 
         employee = new Employee();
-        employee.setEmployeeId(UUID.randomUUID());
+        employee.setId(UUID.randomUUID());
 
         EmployeeAvailability availability = new EmployeeAvailability();
         availability.setEmployee(employee);

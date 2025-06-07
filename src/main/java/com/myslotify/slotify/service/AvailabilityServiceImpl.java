@@ -32,13 +32,13 @@ public class AvailabilityServiceImpl implements AvailabilityService {
 
     private Employee getCurrentEmployee(Authentication authentication) {
         String email = authentication.getName();
-        return employeeRepository.findByUserEmail(email)
+        return employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
     }
 
     public List<EmployeeAvailability> getAvailabilityForEmployee(Authentication auth) {
         Employee employee = getCurrentEmployee(auth);
-        return availabilityRepository.findByEmployeeEmployeeId(employee.getEmployeeId());
+        return availabilityRepository.findByEmployeeId(employee.getId());
     }
 
     public List<EmployeeAvailability> createAvailabilityForDates(CreateAvailabilityRequest request, Authentication auth) {
@@ -96,7 +96,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         EmployeeAvailability availability = availabilityRepository.findById(availabilityId)
                 .orElseThrow(() -> new RuntimeException("Availability not found"));
 
-        if (!availability.getEmployee().getEmployeeId().equals(employee.getEmployeeId())) {
+        if (!availability.getEmployee().getId().equals(employee.getId())) {
             throw new RuntimeException("Unauthorized to delete this availability");
         }
 
@@ -109,7 +109,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         TimeSlot slot = timeSlotRepository.findById(timeSlotId)
                 .orElseThrow(() -> new RuntimeException("Time slot not found"));
 
-        if (!slot.getAvailability().getEmployee().getEmployeeId().equals(employee.getEmployeeId())) {
+        if (!slot.getAvailability().getEmployee().getId().equals(employee.getId())) {
             throw new RuntimeException("Unauthorized to block this time slot");
         }
 
@@ -127,7 +127,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         TimeSlot slot = timeSlotRepository.findById(timeSlotId)
                 .orElseThrow(() -> new RuntimeException("Time slot not found"));
 
-        if (!slot.getAvailability().getEmployee().getEmployeeId().equals(employee.getEmployeeId())) {
+        if (!slot.getAvailability().getEmployee().getId().equals(employee.getId())) {
             throw new RuntimeException("Unauthorized to unblock this time slot");
         }
 
