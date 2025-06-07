@@ -30,7 +30,6 @@ public class ManagementServiceImpl implements ManagementService {
 
     public Service createService(CreateServiceRequest request) {
         Service service = new Service();
-        service.setServiceId(UUID.randomUUID());
         service.setName(request.getName());
         service.setDescription(request.getDescription());
         service.setDuration(request.getDuration());
