@@ -26,4 +26,19 @@ public class Tenant {
     private User tenantAdmin;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private String motto;
+    private String address;
+    private String phone;
+    private String tiktok;
+    private String instagram;
+    private String textColour;
+    private String backgroundColour;
+    private String borderColour;
+    private String font;
+
+    @Lob
+    private byte[] logo;
+    @Lob
+    private byte[] coverPicture;
 }
