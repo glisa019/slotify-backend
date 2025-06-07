@@ -31,6 +31,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JwtService jwtService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
     }
@@ -77,7 +80,13 @@ public class UserServiceImpl implements UserService {
         Employee employee = new Employee();
         employee.setUser(user);
 
-        return employeeRepository.save(employee);
+        Employee saved = employeeRepository.save(employee);
+        notificationService.sendEmail(
+                user.getEmail(),
+                "Employee Account Created",
+                "Your account has been created. Please log in to start managing appointments.");
+
+        return saved;
     }
 
     public User updateUser(UUID id, UpdateUserRequest request) {
