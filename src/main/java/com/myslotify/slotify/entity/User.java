@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User extends BaseAccount {
 
     @Enumerated(EnumType.STRING)
