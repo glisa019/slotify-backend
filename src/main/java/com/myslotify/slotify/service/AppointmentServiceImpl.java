@@ -4,13 +4,12 @@ import com.myslotify.slotify.entity.*;
 import com.myslotify.slotify.repository.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@Service
+@org.springframework.stereotype.Service
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;

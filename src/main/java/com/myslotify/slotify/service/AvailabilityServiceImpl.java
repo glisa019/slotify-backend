@@ -142,7 +142,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     public List<TimeSlot> getAvailableTimeSlotsForEmployee(Authentication auth) {
         Employee employee = getCurrentEmployee(auth);
         return timeSlotRepository
-                .findAllByAvailabilityEmployeeEmployeeIdAndStatus(employee.getEmployeeId(), SlotStatus.AVAILABLE);
+                .findAllByAvailabilityEmployeeEmployeeIdAndStatus(employee.getId(), SlotStatus.AVAILABLE);
     }
 
     public List<TimeSlot> getAvailableTimeSlotsForEmployee(UUID employeeId) {
