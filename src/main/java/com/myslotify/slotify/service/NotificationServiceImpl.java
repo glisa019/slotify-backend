@@ -42,7 +42,11 @@ public class NotificationServiceImpl implements NotificationService {
         message.setTo(to);
         message.setSubject(subject);
         message.setText(body);
-        mailSender.send(message);
+        try {
+            mailSender.send(message);
+        } catch (Exception e) {
+            // ignore email failures
+        }
     }
 
     @Override
@@ -50,7 +54,11 @@ public class NotificationServiceImpl implements NotificationService {
         if (!twilioInitialized || twilioFromPhone.isEmpty()) {
             return;
         }
-        Message.creator(new PhoneNumber(to), new PhoneNumber(twilioFromPhone), message).create();
+        try {
+            Message.creator(new PhoneNumber(to), new PhoneNumber(twilioFromPhone), message).create();
+        } catch (Exception e) {
+            // ignore sms failures
+        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.myslotify.slotify.service;
 import com.myslotify.slotify.dto.CreateServiceRequest;
 import com.myslotify.slotify.dto.UpdateServiceRequest;
 import com.myslotify.slotify.entity.Service;
+import com.myslotify.slotify.exception.NotFoundException;
 import com.myslotify.slotify.repository.ServiceRepository;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class ManagementServiceImpl implements ManagementService {
 
     public Service getService(UUID id) {
         return serviceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Service not found"));
+                .orElseThrow(() -> new NotFoundException("Service not found"));
     }
 
     public Service createService(CreateServiceRequest request) {
