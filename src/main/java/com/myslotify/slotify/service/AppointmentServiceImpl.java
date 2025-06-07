@@ -111,7 +111,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
         Appointment appointment = new Appointment();
-        appointment.setAppointmentId(UUID.randomUUID());
         appointment.setEmployee(slot.getAvailability().getEmployee());
         appointment.setCustomer(customer);
         appointment.setAppointmentTime(LocalDateTime.of(slot.getAvailability().getDate(), slot.getStartTime()));

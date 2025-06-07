@@ -57,7 +57,6 @@ public class AvailabilityServiceImpl implements AvailabilityService {
             }
 
             EmployeeAvailability availability = new EmployeeAvailability();
-            availability.setAvailabilityId(UUID.randomUUID());
             availability.setDate(date);
             availability.setEmployee(employee);
             availability = availabilityRepository.save(availability);
@@ -76,7 +75,6 @@ public class AvailabilityServiceImpl implements AvailabilityService {
 
             while (!current.plusMinutes(intervalMinutes).isAfter(request.getShiftEnd())) {
                 TimeSlot slot = new TimeSlot();
-                slot.setSlotId(UUID.randomUUID());
                 slot.setStartTime(current);
                 slot.setEndTime(current.plusMinutes(intervalMinutes));
                 slot.setStatus(SlotStatus.AVAILABLE);
