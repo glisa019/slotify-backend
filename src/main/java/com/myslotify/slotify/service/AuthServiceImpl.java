@@ -5,8 +5,10 @@ import com.myslotify.slotify.dto.LoginRequest;
 import com.myslotify.slotify.dto.ResetPasswordRequest;
 import com.myslotify.slotify.entity.Admin;
 import com.myslotify.slotify.entity.User;
+import com.myslotify.slotify.entity.Employee;
 import com.myslotify.slotify.repository.AdminRepository;
 import com.myslotify.slotify.repository.UserRepository;
+import com.myslotify.slotify.repository.EmployeeRepository;
 import com.myslotify.slotify.util.TenantContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,15 +17,18 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final AdminRepository adminRepository;
+    private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
     public AuthServiceImpl(UserRepository userRepository,
                            AdminRepository adminRepository,
+                           EmployeeRepository employeeRepository,
                            PasswordEncoder passwordEncoder,
                            JwtService jwtService) {
         this.userRepository = userRepository;
         this.adminRepository = adminRepository;
+        this.employeeRepository = employeeRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
@@ -42,8 +47,22 @@ public class AuthServiceImpl implements AuthService {
             return new AuthResponse("Login successful", token, admin);
         }
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
+        if (user == null) {
+            Employee employee = employeeRepository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+
+            if (!passwordEncoder.matches(request.getPassword(), employee.getPassword())) {
+                throw new RuntimeException("Invalid credentials");
+            }
+
+            if (employee.isPasswordResetRequired()) {
+                throw new RuntimeException("You must reset your password before logging in.");
+            }
+
+            String token = jwtService.generateToken(employee);
+            return new AuthResponse("Login successful", token, employee);
+        }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid credentials");

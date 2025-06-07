@@ -4,6 +4,7 @@ package com.myslotify.slotify.service;
 import com.myslotify.slotify.entity.BaseAccount;
 import com.myslotify.slotify.entity.Admin;
 import com.myslotify.slotify.entity.User;
+import com.myslotify.slotify.entity.Employee;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -26,9 +27,18 @@ public class JwtServiceImpl implements JwtService {
     }
 
     public String generateToken(BaseAccount account) {
+        String role;
+        if (account instanceof Admin admin) {
+            role = admin.getRole().name();
+        } else if (account instanceof Employee employee) {
+            role = employee.getRole().name();
+        } else {
+            role = ((User) account).getRole().name();
+        }
+
         return Jwts.builder()
                 .setSubject(account.getEmail())
-                .claim("role", account instanceof Admin ? ((Admin) account).getRole().name() : ((User) account).getRole().name())
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(Date.from(Instant.now().plus(Duration.ofHours(12))))
                 .signWith(getKey())

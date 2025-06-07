@@ -47,13 +47,11 @@ class AvailabilityServiceImplTest {
     @BeforeEach
     void setUp() {
         auth = new TestingAuthenticationToken("employee@example.com", null);
-        User user = new User();
-        user.setEmail("employee@example.com");
         employee = new Employee();
-        employee.setEmployeeId(UUID.randomUUID());
-        employee.setUser(user);
+        employee.setId(UUID.randomUUID());
+        employee.setEmail("employee@example.com");
 
-        when(employeeRepository.findByUserEmail("employee@example.com"))
+        when(employeeRepository.findByEmail("employee@example.com"))
                 .thenReturn(Optional.of(employee));
         when(availabilityRepository.save(any(EmployeeAvailability.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));

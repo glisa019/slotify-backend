@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface EmployeeAvailabilityRepository extends JpaRepository<EmployeeAvailability, UUID> {
 
-    List<EmployeeAvailability> findByEmployeeEmployeeId(UUID employeeId);
+    List<EmployeeAvailability> findByEmployeeId(UUID employeeId);
 
     boolean existsByEmployeeAndDate(Employee employee, LocalDate date);
 }

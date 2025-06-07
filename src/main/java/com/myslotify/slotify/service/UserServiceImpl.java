@@ -77,14 +77,24 @@ public class UserServiceImpl implements UserService {
     }
 
     public Employee createEmployee(CreateUserRequest request) {
-        User user = (User) createUser(request).getAccount();
+        Optional<Employee> existing = employeeRepository.findByEmail(request.getEmail());
+        if (existing.isPresent()) {
+            throw new RuntimeException("Employee already exists");
+        }
 
         Employee employee = new Employee();
-        employee.setUser(user);
+        employee.setFirstName(request.getFirstName());
+        employee.setLastName(request.getLastName());
+        employee.setPhone(request.getPhone());
+        employee.setEmail(request.getEmail());
+        employee.setPassword(passwordEncoder.encode(request.getPassword()));
+        employee.setRole(Role.EMPLOYEE);
+        employee.setPasswordResetRequired(true);
 
         Employee saved = employeeRepository.save(employee);
+
         notificationService.sendEmail(
-                user.getEmail(),
+                employee.getEmail(),
                 "Employee Account Created",
                 "Your account has been created. Please log in to start managing appointments.");
 
