@@ -138,4 +138,18 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         slot.setStatus(SlotStatus.AVAILABLE);
         timeSlotRepository.save(slot);
     }
+
+    public List<TimeSlot> getAvailableTimeSlotsForEmployee(Authentication auth) {
+        Employee employee = getCurrentEmployee(auth);
+        return timeSlotRepository
+                .findAllByAvailabilityEmployeeEmployeeIdAndStatus(employee.getEmployeeId(), SlotStatus.AVAILABLE);
+    }
+
+    public List<TimeSlot> getAvailableTimeSlotsForEmployee(UUID employeeId) {
+        if (!employeeRepository.existsById(employeeId)) {
+            throw new RuntimeException("Employee not found");
+        }
+        return timeSlotRepository
+                .findAllByAvailabilityEmployeeEmployeeIdAndStatus(employeeId, SlotStatus.AVAILABLE);
+    }
 }

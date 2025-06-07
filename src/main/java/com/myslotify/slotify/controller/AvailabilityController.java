@@ -2,6 +2,7 @@ package com.myslotify.slotify.controller;
 
 import com.myslotify.slotify.dto.CreateAvailabilityRequest;
 import com.myslotify.slotify.entity.EmployeeAvailability;
+import com.myslotify.slotify.entity.TimeSlot;
 import com.myslotify.slotify.service.AvailabilityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -56,5 +57,11 @@ public class AvailabilityController {
     public ResponseEntity<Void> unblockTimeSlot(@PathVariable UUID slotId, Authentication auth) {
         availabilityService.unblockTimeSlot(slotId, auth);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/available-slots")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    public ResponseEntity<List<TimeSlot>> getAvailableSlots(Authentication auth) {
+        return ResponseEntity.ok(availabilityService.getAvailableTimeSlotsForEmployee(auth));
     }
 }
