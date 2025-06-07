@@ -5,6 +5,7 @@ import com.myslotify.slotify.dto.UpdateServiceRequest;
 import com.myslotify.slotify.entity.Service;
 import com.myslotify.slotify.service.ManagementService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class ManagementController {
         this.managementService = managementService;
     }
 
+    @PreAuthorize("hasRole('TENANT_ADMIN')")
     @PostMapping("/services")
     public ResponseEntity<Service> createService(@RequestBody CreateServiceRequest request) {
         return ResponseEntity.ok(managementService.createService(request));
@@ -35,11 +37,13 @@ public class ManagementController {
         return ResponseEntity.ok(managementService.getService(id));
     }
 
+    @PreAuthorize("hasRole('TENANT_ADMIN')")
     @PutMapping("/services/{id}")
     public ResponseEntity<Service> updateService(@PathVariable UUID id, @RequestBody UpdateServiceRequest request) {
         return ResponseEntity.ok(managementService.updateService(id, request));
     }
 
+    @PreAuthorize("hasRole('TENANT_ADMIN')")
     @DeleteMapping("/services/{id}")
     public ResponseEntity<Void> deleteService(@PathVariable UUID id) {
         managementService.deleteService(id);
