@@ -38,6 +38,12 @@ public class TenantController {
         return ResponseEntity.ok(tenantService.createTenant(request));
     }
 
+    @PreAuthorize("hasRole('TENANT_ADMIN')")
+    @GetMapping("/me")
+    public ResponseEntity<TenantResponse> getCurrentTenant() {
+        return ResponseEntity.ok(tenantService.getCurrentTenant());
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTenant(@PathVariable UUID id) {

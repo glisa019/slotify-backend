@@ -77,3 +77,17 @@ A Postman collection is provided to exercise the API. Import `Slotify.postman_co
 ## API documentation
 
 The project uses springdoc-openapi to expose Swagger UI. Once the application is running, navigate to [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) to explore available endpoints. The raw OpenAPI spec can be retrieved from [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs).
+
+## Retrieving tenant info
+
+Tenant admins can fetch their tenant details and obtain a new payment link when
+their subscription is still pending:
+
+```
+GET /api/tenants/me
+```
+
+The backend looks up the tenant using the authenticated admin's account.
+If the subscription status is `ACTIVE`, only the tenant information is
+returned. When the status is `PENDING`, a new Stripe Checkout session is
+created and its `paymentUrl` is included in the response.
