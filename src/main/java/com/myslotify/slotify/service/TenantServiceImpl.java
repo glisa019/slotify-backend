@@ -2,7 +2,6 @@ package com.myslotify.slotify.service;
 
 import com.myslotify.slotify.dto.TenantRequest;
 import com.myslotify.slotify.dto.TenantResponse;
-import com.myslotify.slotify.entity.Employee;
 import com.myslotify.slotify.entity.SubscriptionStatus;
 import com.myslotify.slotify.entity.Tenant;
 import com.myslotify.slotify.exception.BadRequestException;
@@ -10,7 +9,6 @@ import com.myslotify.slotify.exception.NotFoundException;
 import com.myslotify.slotify.repository.TenantRepository;
 import jakarta.transaction.Transactional;
 import liquibase.integration.spring.SpringLiquibase;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,6 +78,36 @@ public class TenantServiceImpl implements TenantService {
             if (email != null) {
                 sessionUrl = stripeService.createSubscriptionSession(email, successUrl, cancelUrl);
             }
+        } catch (Exception e) {
+            throw new BadRequestException("Failed to create Stripe session", e);
+        }
+
+        return new TenantResponse(tenant, sessionUrl);
+    }
+
+    @Override
+    public TenantResponse getCurrentTenant() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new BadRequestException("Missing authentication");
+        }
+
+        String email = authentication.getName();
+        Tenant tenant = tenantRepository.findByTenantAdminEmail(email)
+                .orElseThrow(() -> new NotFoundException("Tenant not found"));
+
+        if (tenant.getSubscriptionStatus() == SubscriptionStatus.ACTIVE) {
+            return new TenantResponse(tenant, null);
+        }
+
+        if (tenant.getTenantAdmin() == null) {
+            throw new BadRequestException("Tenant admin not set");
+        }
+
+        String sessionUrl;
+        try {
+            sessionUrl = stripeService.createSubscriptionSession(
+                    tenant.getTenantAdmin().getEmail(), successUrl, cancelUrl);
         } catch (Exception e) {
             throw new BadRequestException("Failed to create Stripe session", e);
         }

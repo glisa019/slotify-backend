@@ -18,4 +18,14 @@ public interface TenantService {
     Tenant getTenantById(UUID id);
 
     void deleteTenant(UUID id);
+
+    /**
+     * Fetch information for the tenant owned by the currently authenticated
+     * TENANT_ADMIN. The tenant is resolved from the admin's user account.
+     * If the subscription is pending, a new Stripe Checkout session is created
+     * and returned in the response.
+     *
+     * @return tenant data and optionally a payment URL
+     */
+    TenantResponse getCurrentTenant();
 }
