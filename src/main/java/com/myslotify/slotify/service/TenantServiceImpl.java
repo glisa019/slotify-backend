@@ -116,15 +116,21 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Transactional
-    public Tenant activateTenant(String name, String schemaName) {
-        Tenant tenant = tenantRepository.findByName(name)
+    public Tenant activateTenant() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new BadRequestException("Missing authentication");
+        }
+
+        String email = authentication.getName();
+        Tenant tenant = tenantRepository.findByTenantAdminEmail(email)
                 .orElseThrow(() -> new NotFoundException("Tenant not found"));
         tenant.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
 
         tenantRepository.save(tenant);
 
+        String schemaName = tenant.getSchemaName();
         createSchema(schemaName);
-
         applyLiquibaseChangeSets(schemaName);
 
         return tenant;

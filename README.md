@@ -91,3 +91,14 @@ The backend looks up the tenant using the authenticated admin's account.
 If the subscription status is `ACTIVE`, only the tenant information is
 returned. When the status is `PENDING`, a new Stripe Checkout session is
 created and its `paymentUrl` is included in the response.
+
+## Activating a tenant
+
+Tenant admins can activate their tenant after payment is confirmed:
+
+```
+POST /api/tenants/activate
+```
+
+This sets the tenant's subscription status to `ACTIVE`, creates the schema and
+applies Liquibase migrations.

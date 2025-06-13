@@ -28,4 +28,12 @@ public interface TenantService {
      * @return tenant data and optionally a payment URL
      */
     TenantResponse getCurrentTenant();
+
+    /**
+     * Activate the currently authenticated tenant after payment confirmation.
+     * The schema will be created and Liquibase migrations applied.
+     *
+     * @return the updated tenant entity
+     */
+    Tenant activateTenant();
 }
