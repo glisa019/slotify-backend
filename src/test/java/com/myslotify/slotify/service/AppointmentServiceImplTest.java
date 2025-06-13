@@ -111,4 +111,22 @@ class AppointmentServiceImplTest {
         assertEquals(SlotStatus.AVAILABLE, slot2.getStatus());
         verify(timeSlotRepository, times(2)).saveAll(any());
     }
+
+    @Test
+    void sendRemindersMarksAppointments() {
+        Appointment appt = new Appointment();
+        appt.setAppointmentTime(java.time.LocalDateTime.now().plusHours(1));
+        appt.setService(service);
+        appt.setCustomer(user);
+        appt.setStatus(AppointmentStatus.SCHEDULED);
+
+        when(appointmentRepository.findByAppointmentTimeBetweenAndReminderSentFalse(any(), any()))
+                .thenReturn(java.util.Collections.singletonList(appt));
+
+        appointmentService.sendRemindersForUpcomingAppointments();
+
+        assertTrue(appt.isReminderSent());
+        verify(notificationService).sendAppointmentReminder(appt);
+        verify(appointmentRepository).saveAll(any());
+    }
 }

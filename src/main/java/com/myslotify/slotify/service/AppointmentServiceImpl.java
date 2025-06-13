@@ -116,6 +116,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setAppointmentTime(LocalDateTime.of(slot.getAvailability().getDate(), slot.getStartTime()));
         appointment.setService(service);
         appointment.setStatus(AppointmentStatus.SCHEDULED);
+        appointment.setReminderSent(false);
 
         appointment = appointmentRepository.save(appointment);
 
@@ -168,9 +169,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void sendRemindersForUpcomingAppointments() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime tomorrow = now.plusHours(24);
-        List<Appointment> upcoming = getAppointmentsBetween(now, tomorrow);
+        List<Appointment> upcoming = appointmentRepository
+                .findByAppointmentTimeBetweenAndReminderSentFalse(now, tomorrow);
         for (Appointment appt : upcoming) {
             notificationService.sendAppointmentReminder(appt);
+            appt.setReminderSent(true);
+        }
+        if (!upcoming.isEmpty()) {
+            appointmentRepository.saveAll(upcoming);
         }
     }
 }
