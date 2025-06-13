@@ -50,4 +50,11 @@ public class TenantController {
         tenantService.deleteTenant(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PreAuthorize("hasRole('TENANT_ADMIN')")
+    @PostMapping("/activate")
+    public ResponseEntity<Tenant> activateTenant() {
+        Tenant tenant = tenantService.activateTenant();
+        return ResponseEntity.ok(tenant);
+    }
 }
