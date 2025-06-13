@@ -3,10 +3,12 @@ package com.myslotify.slotify.service;
 import com.myslotify.slotify.dto.AuthResponse;
 import com.myslotify.slotify.dto.LoginRequest;
 import com.myslotify.slotify.entity.Admin;
+import com.myslotify.slotify.entity.AdminRole;
 import com.myslotify.slotify.entity.Role;
 import com.myslotify.slotify.entity.User;
 import com.myslotify.slotify.entity.SubscriptionStatus;
 import com.myslotify.slotify.entity.Tenant;
+import com.myslotify.slotify.exception.UnauthorizedException;
 import com.myslotify.slotify.repository.AdminRepository;
 import com.myslotify.slotify.repository.UserRepository;
 import com.myslotify.slotify.repository.TenantRepository;
@@ -102,6 +104,25 @@ class AuthServiceImplTest {
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("pass", "hash")).thenReturn(true);
 
-        assertThrows(RuntimeException.class, () -> authService.login(request));
+        assertThrows(UnauthorizedException.class, () -> authService.login(request));
+    }
+
+    @Test
+    void loginTenantAdminFailsWhenSubscriptionPending() {
+        LoginRequest request = new LoginRequest();
+        request.email = "admin@example.com";
+        request.password = "pass";
+
+        Admin admin = new Admin();
+        admin.setPassword("hash");
+        admin.setRole(AdminRole.TENANT_ADMIN);
+        when(adminRepository.findByEmail("admin@example.com")).thenReturn(Optional.of(admin));
+        when(passwordEncoder.matches("pass", "hash")).thenReturn(true);
+
+        Tenant tenant = new Tenant();
+        tenant.setSubscriptionStatus(SubscriptionStatus.PENDING);
+        when(tenantRepository.findByTenantAdminEmail("admin@example.com")).thenReturn(Optional.of(tenant));
+
+        assertThrows(UnauthorizedException.class, () -> authService.login(request));
     }
 }
