@@ -55,8 +55,8 @@ public class AuthServiceImpl implements AuthService {
             if (admin.getRole() == AdminRole.TENANT_ADMIN) {
                 Tenant tenant = tenantRepository.findByTenantAdminEmail(admin.getEmail())
                         .orElseThrow(() -> new UnauthorizedException("Tenant not found"));
-                if (tenant.getSubscriptionStatus() == SubscriptionStatus.PENDING) {
-                    throw new UnauthorizedException("Tenant subscription pending");
+                if (tenant.getSubscriptionStatus() == SubscriptionStatus.INACTIVE) {
+                    throw new UnauthorizedException("Tenant subscription inactive");
                 }
             }
 
