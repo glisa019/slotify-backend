@@ -70,34 +70,20 @@ public class AuthServiceImpl implements AuthService {
             throw new UnauthorizedException("Tenant subscription inactive");
         }
 
-        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
-        if (user == null) {
-            Employee employee = employeeRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
+        User account = userRepository.findByEmail(request.getEmail())
+                .orElseGet(() -> employeeRepository.findByEmail(request.getEmail()).orElse(null));
 
-            if (!passwordEncoder.matches(request.getPassword(), employee.getPassword())) {
-                throw new UnauthorizedException("Invalid credentials");
-            }
-
-            if (employee.isPasswordResetRequired()) {
-                throw new UnauthorizedException("You must reset your password before logging in.");
-            }
-
-            String token = jwtService.generateToken(employee);
-            return new AuthResponse("Login successful", token, employee);
-        }
-
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (account == null || !passwordEncoder.matches(request.getPassword(), account.getPassword())) {
             throw new UnauthorizedException("Invalid credentials");
         }
 
-        if (user.isPasswordResetRequired()) {
+        if (account.isPasswordResetRequired()) {
             throw new UnauthorizedException("You must reset your password before logging in.");
         }
 
-        String token = jwtService.generateToken(user);
+        String token = jwtService.generateToken(account);
 
-        return new AuthResponse("Login successful", token, user);
+        return new AuthResponse("Login successful", token, account);
     }
 
     @Override
