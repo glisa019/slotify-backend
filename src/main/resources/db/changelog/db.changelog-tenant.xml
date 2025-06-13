@@ -102,6 +102,9 @@
       <column name="status" type="VARCHAR(50)">
         <constraints nullable="false"/>
       </column>
+      <column name="reminder_sent" type="BOOLEAN" defaultValueBoolean="false">
+        <constraints nullable="false"/>
+      </column>
     </createTable>
   </changeSet>
 </databaseChangeLog>

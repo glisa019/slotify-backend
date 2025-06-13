@@ -11,4 +11,6 @@ import java.util.UUID;
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
     List<Appointment> findByAppointmentTimeBetween(LocalDateTime start, LocalDateTime end);
+
+    List<Appointment> findByAppointmentTimeBetweenAndReminderSentFalse(LocalDateTime start, LocalDateTime end);
 }

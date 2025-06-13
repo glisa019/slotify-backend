@@ -31,4 +31,7 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AppointmentStatus status;
+
+    @Column(nullable = false)
+    private boolean reminderSent = false;
 }
