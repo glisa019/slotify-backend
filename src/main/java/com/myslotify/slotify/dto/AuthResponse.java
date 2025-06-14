@@ -10,4 +10,5 @@ public class AuthResponse {
     public String message;
     public String token;
     public BaseAccount account;
+    public boolean passwordResetRequired;
 }

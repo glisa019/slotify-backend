@@ -33,7 +33,7 @@ class AuthControllerTest {
         LoginRequest request = new LoginRequest();
         request.email = "test@example.com";
         request.password = "pass";
-        Mockito.when(authService.login(Mockito.any())).thenReturn(new AuthResponse("ok", "token", null));
+        Mockito.when(authService.login(Mockito.any())).thenReturn(new AuthResponse("ok", "token", null, false));
 
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -44,7 +44,7 @@ class AuthControllerTest {
     @Test
     void resetPasswordEndpointReturnsOk() throws Exception {
         ResetPasswordRequest request = new ResetPasswordRequest();
-        Mockito.when(authService.resetPassword(Mockito.any())).thenReturn(new AuthResponse("ok", "token", null));
+        Mockito.when(authService.resetPassword(Mockito.any())).thenReturn(new AuthResponse("ok", "token", null, false));
 
         mockMvc.perform(post("/api/auth/reset-password")
                 .contentType(MediaType.APPLICATION_JSON)

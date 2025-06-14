@@ -61,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
             }
 
             String token = jwtService.generateToken(admin);
-            return new AuthResponse("Login successful", token, admin);
+            return new AuthResponse("Login successful", token, admin, false);
         }
 
         Tenant tenant = tenantRepository.findBySchemaName(TenantContext.getCurrentTenant())
@@ -77,13 +77,13 @@ public class AuthServiceImpl implements AuthService {
             throw new UnauthorizedException("Invalid credentials");
         }
 
-        if (account.isPasswordResetRequired()) {
-            throw new UnauthorizedException("You must reset your password before logging in.");
-        }
+        boolean resetRequired = account.isPasswordResetRequired();
 
         String token = jwtService.generateToken(account);
 
-        return new AuthResponse("Login successful", token, account);
+        String message = resetRequired ? "Password reset required" : "Login successful";
+
+        return new AuthResponse(message, token, account, resetRequired);
     }
 
     @Override
@@ -100,6 +100,6 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         String token = jwtService.generateToken(user);
-        return new AuthResponse("Password reset successful", token, user);
+        return new AuthResponse("Password reset successful", token, user, false);
     }
 }
