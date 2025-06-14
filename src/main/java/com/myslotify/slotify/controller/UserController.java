@@ -60,11 +60,13 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(id));
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/user")
     public ResponseEntity<AuthResponse> createUser(@RequestBody CreateUserRequest request) {
         return ResponseEntity.ok(userService.createUser(request));
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("/user/{id}")
     public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody UpdateUserRequest request) {
         return ResponseEntity.ok(userService.updateUser(id, request));
