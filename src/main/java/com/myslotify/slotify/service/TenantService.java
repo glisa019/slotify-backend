@@ -22,6 +22,15 @@ public interface TenantService {
     void deleteTenant(UUID id);
 
     /**
+     * Activate the tenant with the given id. Used by admins to manually
+     * enable a tenant without relying on the authenticated tenant admin.
+     *
+     * @param id the tenant identifier
+     * @return the activated tenant entity
+     */
+    Tenant activateTenant(UUID id);
+
+    /**
      * Fetch information for the tenant owned by the currently authenticated
      * TENANT_ADMIN. The tenant is resolved from the admin's user account.
      * If the subscription is pending, a new Stripe Checkout session is created

@@ -109,6 +109,19 @@ POST /api/tenants/activate
 This sets the tenant's subscription status to `ACTIVE`, creates the schema and
 applies Liquibase migrations.
 
+System administrators can also activate a specific tenant by id:
+
+```
+POST /api/tenants/{tenantId}/activate
+```
+
+This performs the same activation steps without relying on the tenant admin's
+authentication.
+
+Deleting a tenant via the admin API no longer removes the record. Instead the
+tenant's subscription status is set to `INACTIVE` so the data remains available
+for reactivation.
+
 ## Updating tenant info
 
 Tenant admins can modify details about their tenant once activated:

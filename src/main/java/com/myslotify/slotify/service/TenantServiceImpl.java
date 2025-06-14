@@ -207,7 +207,26 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public void deleteTenant(UUID id) {
-        tenantRepository.deleteById(id);
+        Tenant tenant = tenantRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Tenant not found"));
+        tenant.setSubscriptionStatus(SubscriptionStatus.INACTIVE);
+        tenantRepository.save(tenant);
+    }
+
+    @Override
+    @Transactional
+    public Tenant activateTenant(UUID id) {
+        Tenant tenant = tenantRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Tenant not found"));
+
+        tenant.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
+        tenantRepository.save(tenant);
+
+        String schemaName = tenant.getSchemaName();
+        createSchema(schemaName);
+        applyLiquibaseChangeSets(schemaName);
+
+        return tenant;
     }
 }
 
