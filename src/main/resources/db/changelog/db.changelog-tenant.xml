@@ -51,9 +51,10 @@
       </column>
     </createTable>
     <addForeignKeyConstraint baseTableName="employee"
-                            baseColumnNames="employee_id"
-                            referencedTableName="user"
-                            referencedColumnNames="user_id"/>
+                             baseColumnNames="employee_id"
+                             referencedTableName="user"
+                             referencedColumnNames="user_id"
+                             constraintName="employee_availability"/>
     <createTable tableName="employee_availability">
       <column name="availability_id" type="UUID">
         <constraints primaryKey="true" nullable="false"/>

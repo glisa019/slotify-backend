@@ -10,5 +10,4 @@ public class CreateUserRequest {
     public String phone;
     public String email;
     public String password;
-    public Role role;
 }
