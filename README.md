@@ -92,6 +92,12 @@ If the subscription status is `ACTIVE`, only the tenant information is
 returned. When the status is `PENDING`, a new Stripe Checkout session is
 created and its `paymentUrl` is included in the response.
 
+Public clients can also fetch tenant details by key without authentication:
+
+```
+GET /api/tenants/key/{schemaName}
+```
+
 ## Activating a tenant
 
 Tenant admins can activate their tenant after payment is confirmed:

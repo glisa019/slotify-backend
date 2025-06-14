@@ -32,6 +32,12 @@ public class TenantController {
         return ResponseEntity.ok(tenantService.getTenantById(id));
     }
 
+    @PreAuthorize("permitAll()")
+    @GetMapping("/key/{key}")
+    public ResponseEntity<Tenant> getTenantByKey(@PathVariable String key) {
+        return ResponseEntity.ok(tenantService.getTenantByKey(key));
+    }
+
     @PreAuthorize("hasRole('TENANT_ADMIN')")
     @PostMapping
     public ResponseEntity<TenantResponse> createTenant(@RequestBody TenantRequest request) {
