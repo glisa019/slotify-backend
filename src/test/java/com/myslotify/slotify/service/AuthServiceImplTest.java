@@ -62,6 +62,7 @@ class AuthServiceImplTest {
         AuthResponse response = authService.login(request);
         assertEquals("token", response.getToken());
         assertEquals(admin, response.getAccount());
+        assertFalse(response.isPasswordResetRequired());
     }
 
     @Test
@@ -85,6 +86,7 @@ class AuthServiceImplTest {
         AuthResponse response = authService.login(request);
         assertEquals("token", response.getToken());
         assertEquals(user, response.getAccount());
+        assertFalse(response.isPasswordResetRequired());
     }
 
     @Test

@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
 
         String token = jwtService.generateToken(user);
 
-        return new AuthResponse("User registered successfully", token, user);
+        return new AuthResponse("User registered successfully", token, user, user.isPasswordResetRequired());
     }
 
     public Employee createEmployee(CreateUserRequest request) {
