@@ -4,6 +4,7 @@ import com.myslotify.slotify.dto.TenantRequest;
 import com.myslotify.slotify.dto.TenantResponse;
 import com.myslotify.slotify.entity.Tenant;
 import com.myslotify.slotify.service.TenantService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,14 @@ public class TenantController {
     @GetMapping("/me")
     public ResponseEntity<TenantResponse> getCurrentTenant() {
         return ResponseEntity.ok(tenantService.getCurrentTenant());
+    }
+
+    @PreAuthorize("hasRole('TENANT_ADMIN')")
+    @PutMapping("/me")
+    @Operation(summary = "Update current tenant information",
+            description = "Allows a tenant admin to modify the tenant profile")
+    public ResponseEntity<Tenant> updateTenant(@RequestBody TenantRequest request) {
+        return ResponseEntity.ok(tenantService.updateTenant(request));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

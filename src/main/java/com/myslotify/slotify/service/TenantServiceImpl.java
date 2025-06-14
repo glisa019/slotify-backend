@@ -136,6 +136,36 @@ public class TenantServiceImpl implements TenantService {
         return tenant;
     }
 
+    @Override
+    public Tenant updateTenant(TenantRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new BadRequestException("Missing authentication");
+        }
+
+        String email = authentication.getName();
+        Tenant tenant = tenantRepository.findByTenantAdminEmail(email)
+                .orElseThrow(() -> new NotFoundException("Tenant not found"));
+
+        tenant.setName(request.getName());
+        tenant.setDescription(request.getDescription());
+        tenant.setMotto(request.getMotto());
+        tenant.setAddress(request.getAddress());
+        tenant.setPhone(request.getPhone());
+        tenant.setTiktok(request.getTiktok());
+        tenant.setInstagram(request.getInstagram());
+        tenant.setTextColour(request.getTextColour());
+        tenant.setBackgroundColour(request.getBackgroundColour());
+        tenant.setBorderColour(request.getBorderColour());
+        tenant.setFont(request.getFont());
+        tenant.setLogo(request.getLogo());
+        tenant.setCoverPicture(request.getCoverPicture());
+        tenant.setUpdatedAt(LocalDateTime.now());
+
+        tenantRepository.save(tenant);
+        return tenant;
+    }
+
     private void createSchema(String schemaName) {
         if (!SCHEMA_PATTERN.matcher(schemaName).matches()) {
             throw new IllegalArgumentException("Invalid schema name");

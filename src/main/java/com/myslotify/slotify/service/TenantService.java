@@ -13,6 +13,8 @@ public interface TenantService {
 
     TenantResponse createTenant(TenantRequest request);
 
+    Tenant updateTenant(TenantRequest request);
+
     List<Tenant> getAllTenants();
 
     Tenant getTenantById(UUID id);
