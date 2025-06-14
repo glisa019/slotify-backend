@@ -11,6 +11,7 @@ import com.myslotify.slotify.exception.NotFoundException;
 import com.myslotify.slotify.repository.EmployeeRepository;
 import com.myslotify.slotify.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,12 +48,24 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NotFoundException("Employee not found"));
     }
 
+    public Employee getCurrentEmployee(Authentication auth) {
+        String email = auth.getName();
+        return employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Employee not found"));
+    }
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     public User getUser(UUID id) {
         return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+    }
+
+    public User getCurrentUser(Authentication auth) {
+        String email = auth.getName();
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
