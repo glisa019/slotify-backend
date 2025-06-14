@@ -102,3 +102,14 @@ POST /api/tenants/activate
 
 This sets the tenant's subscription status to `ACTIVE`, creates the schema and
 applies Liquibase migrations.
+
+## Updating tenant info
+
+Tenant admins can modify details about their tenant once activated:
+
+```
+PUT /api/tenants/me
+```
+
+The request body uses the same format as tenant creation and the updated
+tenant record is returned on success.
