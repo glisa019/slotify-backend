@@ -170,6 +170,12 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Override
+    public Tenant getTenantByKey(String key) {
+        return tenantRepository.findBySchemaName(key)
+                .orElseThrow(() -> new NotFoundException("Tenant not found"));
+    }
+
+    @Override
     public void deleteTenant(UUID id) {
         tenantRepository.deleteById(id);
     }

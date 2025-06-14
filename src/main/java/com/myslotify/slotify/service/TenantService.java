@@ -36,4 +36,12 @@ public interface TenantService {
      * @return the updated tenant entity
      */
     Tenant activateTenant();
+
+    /**
+     * Retrieve tenant information by its unique key (schema name).
+     *
+     * @param key the tenant key
+     * @return the tenant entity
+     */
+    Tenant getTenantByKey(String key);
 }
