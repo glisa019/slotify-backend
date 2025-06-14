@@ -9,10 +9,11 @@ import com.myslotify.slotify.exception.NotFoundException;
 import com.myslotify.slotify.repository.TenantRepository;
 import jakarta.transaction.Transactional;
 import liquibase.integration.spring.SpringLiquibase;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import com.myslotify.slotify.util.TenantContext;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -87,13 +88,12 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public TenantResponse getCurrentTenant() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            throw new BadRequestException("Missing authentication");
+        String schema = TenantContext.getCurrentTenant();
+        if (schema == null) {
+            throw new BadRequestException("Missing tenant context");
         }
 
-        String email = authentication.getName();
-        Tenant tenant = tenantRepository.findByTenantAdminEmail(email)
+        Tenant tenant = tenantRepository.findBySchemaName(schema)
                 .orElseThrow(() -> new NotFoundException("Tenant not found"));
 
         if (tenant.getSubscriptionStatus() == SubscriptionStatus.ACTIVE) {
@@ -117,13 +117,12 @@ public class TenantServiceImpl implements TenantService {
 
     @Transactional
     public Tenant activateTenant() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            throw new BadRequestException("Missing authentication");
+        String schema = TenantContext.getCurrentTenant();
+        if (schema == null) {
+            throw new BadRequestException("Missing tenant context");
         }
 
-        String email = authentication.getName();
-        Tenant tenant = tenantRepository.findByTenantAdminEmail(email)
+        Tenant tenant = tenantRepository.findBySchemaName(schema)
                 .orElseThrow(() -> new NotFoundException("Tenant not found"));
         tenant.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
 
@@ -138,13 +137,12 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public Tenant updateTenant(TenantRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            throw new BadRequestException("Missing authentication");
+        String schema = TenantContext.getCurrentTenant();
+        if (schema == null) {
+            throw new BadRequestException("Missing tenant context");
         }
 
-        String email = authentication.getName();
-        Tenant tenant = tenantRepository.findByTenantAdminEmail(email)
+        Tenant tenant = tenantRepository.findBySchemaName(schema)
                 .orElseThrow(() -> new NotFoundException("Tenant not found"));
 
         tenant.setName(request.getName());

@@ -5,8 +5,7 @@ import com.myslotify.slotify.entity.Tenant;
 import com.myslotify.slotify.exception.NotFoundException;
 import com.myslotify.slotify.repository.TenantRepository;
 import liquibase.integration.spring.SpringLiquibase;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.myslotify.slotify.util.TenantContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,8 +44,7 @@ class TenantServiceImplTest {
     void setUp() throws Exception {
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.createStatement()).thenReturn(statement);
-        TestingAuthenticationToken auth = new TestingAuthenticationToken("admin@example.com", null);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        TenantContext.setCurrentTenant("demo_schema");
     }
 
     @Test
@@ -54,7 +52,7 @@ class TenantServiceImplTest {
         Tenant tenant = new Tenant();
         tenant.setSchemaName("demo_schema");
         tenant.setSubscriptionStatus(SubscriptionStatus.PENDING);
-        when(tenantRepository.findByTenantAdminEmail("admin@example.com"))
+        when(tenantRepository.findBySchemaName("demo_schema"))
                 .thenReturn(Optional.of(tenant));
 
         Tenant result = tenantService.activateTenant();
@@ -70,7 +68,7 @@ class TenantServiceImplTest {
 
     @Test
     void activateTenantThrowsWhenNotFound() {
-        when(tenantRepository.findByTenantAdminEmail("admin@example.com"))
+        when(tenantRepository.findBySchemaName("demo_schema"))
                 .thenReturn(Optional.empty());
         assertThrows(NotFoundException.class,
                 () -> tenantService.activateTenant());

@@ -87,10 +87,10 @@ their subscription is still pending:
 GET /api/tenants/me
 ```
 
-The backend looks up the tenant using the authenticated admin's account.
-If the subscription status is `ACTIVE`, only the tenant information is
-returned. When the status is `PENDING`, a new Stripe Checkout session is
-created and its `paymentUrl` is included in the response.
+The backend resolves the tenant using the `X-Tenant-ID` header rather than the
+authenticated admin's account. If the subscription status is `ACTIVE`, only the
+tenant information is returned. When the status is `PENDING`, a new Stripe
+Checkout session is created and its `paymentUrl` is included in the response.
 
 Public clients can also fetch tenant details by key without authentication:
 
