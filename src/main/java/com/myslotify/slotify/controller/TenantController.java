@@ -66,6 +66,13 @@ public class TenantController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/{id}/activate")
+    public ResponseEntity<Tenant> activateTenant(@PathVariable UUID id) {
+        Tenant tenant = tenantService.activateTenant(id);
+        return ResponseEntity.ok(tenant);
+    }
+
     @PreAuthorize("hasRole('TENANT_ADMIN')")
     @PostMapping("/activate")
     public ResponseEntity<Tenant> activateTenant() {
