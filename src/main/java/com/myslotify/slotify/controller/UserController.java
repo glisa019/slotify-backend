@@ -8,6 +8,7 @@ import com.myslotify.slotify.entity.User;
 import com.myslotify.slotify.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,10 +30,16 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllEmployees());
     }
 
-    @PreAuthorize("hasRole('TENANT_ADMIN')")
+    @PreAuthorize("hasRole('TENANT_ADMIN') or (hasRole('EMPLOYEE') and #id == authentication.principal.id)")
     @GetMapping("/employee/{id}")
     public ResponseEntity<Employee> getEmployee(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getEmployee(id));
+    }
+
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @GetMapping("/employee/me")
+    public ResponseEntity<Employee> getCurrentEmployee(Authentication auth) {
+        return ResponseEntity.ok(userService.getCurrentEmployee(auth));
     }
 
     @PreAuthorize("hasRole('TENANT_ADMIN')")
@@ -54,10 +61,16 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @PreAuthorize("hasRole('TENANT_ADMIN')")
+    @PreAuthorize("hasRole('TENANT_ADMIN') or (hasRole('CUSTOMER') and #id == authentication.principal.id)")
     @GetMapping("/user/{id}")
     public ResponseEntity<User> getUser(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getUser(id));
+    }
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @GetMapping("/user/me")
+    public ResponseEntity<User> getCurrentUser(Authentication auth) {
+        return ResponseEntity.ok(userService.getCurrentUser(auth));
     }
 
     @PreAuthorize("hasRole('USER')")
