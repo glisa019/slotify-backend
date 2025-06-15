@@ -37,8 +37,9 @@ public class Tenant {
     private String borderColour;
     private String font;
 
-    @Lob
-    private byte[] logo;
-    @Lob
-    private byte[] coverPicture;
+    @Column(name = "logo_url")
+    private String logoUrl;
+
+    @Column(name = "cover_picture_url")
+    private String coverPictureUrl;
 }

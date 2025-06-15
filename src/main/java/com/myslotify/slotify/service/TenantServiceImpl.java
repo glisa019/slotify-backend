@@ -30,17 +30,20 @@ public class TenantServiceImpl implements TenantService {
     private final TenantRepository tenantRepository;
     private final SpringLiquibase springLiquibase;
     private final StripeService stripeService;
+    private final FileStorageService fileStorageService;
 
     private static final Pattern SCHEMA_PATTERN = Pattern.compile("[A-Za-z0-9_]+");
 
     public TenantServiceImpl(DataSource dataSource,
                              TenantRepository tenantRepository,
                              SpringLiquibase springLiquibase,
-                             StripeService stripeService) {
+                             StripeService stripeService,
+                             FileStorageService fileStorageService) {
         this.dataSource = dataSource;
         this.tenantRepository = tenantRepository;
         this.springLiquibase = springLiquibase;
         this.stripeService = stripeService;
+        this.fileStorageService = fileStorageService;
     }
 
     @Value("${stripe.success.url}")
@@ -67,8 +70,14 @@ public class TenantServiceImpl implements TenantService {
         tenant.setBackgroundColour(request.getBackgroundColour());
         tenant.setBorderColour(request.getBorderColour());
         tenant.setFont(request.getFont());
-        tenant.setLogo(request.getLogo());
-        tenant.setCoverPicture(request.getCoverPicture());
+        if (request.getLogo() != null && !request.getLogo().isEmpty()) {
+            String logoPath = fileStorageService.store(request.getLogo());
+            tenant.setLogoUrl(logoPath);
+        }
+        if (request.getCoverPicture() != null && !request.getCoverPicture().isEmpty()) {
+            String coverPath = fileStorageService.store(request.getCoverPicture());
+            tenant.setCoverPictureUrl(coverPath);
+        }
         tenant.setCreatedAt(LocalDateTime.now());
         tenant.setSubscriptionStatus(SubscriptionStatus.PENDING);
 
@@ -156,8 +165,14 @@ public class TenantServiceImpl implements TenantService {
         tenant.setBackgroundColour(request.getBackgroundColour());
         tenant.setBorderColour(request.getBorderColour());
         tenant.setFont(request.getFont());
-        tenant.setLogo(request.getLogo());
-        tenant.setCoverPicture(request.getCoverPicture());
+        if (request.getLogo() != null && !request.getLogo().isEmpty()) {
+            String logoPath = fileStorageService.store(request.getLogo());
+            tenant.setLogoUrl(logoPath);
+        }
+        if (request.getCoverPicture() != null && !request.getCoverPicture().isEmpty()) {
+            String coverPath = fileStorageService.store(request.getCoverPicture());
+            tenant.setCoverPictureUrl(coverPath);
+        }
         tenant.setUpdatedAt(LocalDateTime.now());
 
         tenantRepository.save(tenant);

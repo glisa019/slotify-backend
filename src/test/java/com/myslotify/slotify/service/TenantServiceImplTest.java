@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import com.myslotify.slotify.service.FileStorageService;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -32,6 +33,8 @@ class TenantServiceImplTest {
     private SpringLiquibase springLiquibase;
     @Mock
     private StripeService stripeService;
+    @Mock
+    private FileStorageService fileStorageService;
     @Mock
     private Connection connection;
     @Mock

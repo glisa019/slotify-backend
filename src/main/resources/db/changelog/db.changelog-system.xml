@@ -33,8 +33,8 @@
       <column name="background_colour" type="VARCHAR(255)"/>
       <column name="border_colour" type="VARCHAR(255)"/>
       <column name="font" type="VARCHAR(255)"/>
-      <column name="logo" type="BYTEA"/>
-      <column name="cover_picture" type="BYTEA"/>
+      <column name="logo_url" type="VARCHAR(512)"/>
+      <column name="cover_picture_url" type="VARCHAR(512)"/>
     </createTable>
   </changeSet>
   <changeSet id="create-admin-table" author="nikola">
