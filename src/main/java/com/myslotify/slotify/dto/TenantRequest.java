@@ -1,6 +1,7 @@
 package com.myslotify.slotify.dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +23,6 @@ public class TenantRequest {
     private String borderColour;
     private String font;
 
-    private byte[] logo;
-    private byte[] coverPicture;
+    private MultipartFile logo;
+    private MultipartFile coverPicture;
 }
