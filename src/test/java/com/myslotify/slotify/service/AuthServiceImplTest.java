@@ -63,6 +63,7 @@ class AuthServiceImplTest {
         assertEquals("token", response.getToken());
         assertEquals(admin, response.getAccount());
         assertFalse(response.isPasswordResetRequired());
+        assertNull(response.getTenantExists());
     }
 
     @Test
@@ -87,6 +88,7 @@ class AuthServiceImplTest {
         assertEquals("token", response.getToken());
         assertEquals(user, response.getAccount());
         assertFalse(response.isPasswordResetRequired());
+        assertNull(response.getTenantExists());
     }
 
     @Test
@@ -110,7 +112,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void loginTenantAdminFailsWhenSubscriptionPending() {
+    void loginTenantAdminWithExistingTenant() {
         LoginRequest request = new LoginRequest();
         request.email = "admin@example.com";
         request.password = "pass";
@@ -122,9 +124,31 @@ class AuthServiceImplTest {
         when(passwordEncoder.matches("pass", "hash")).thenReturn(true);
 
         Tenant tenant = new Tenant();
-        tenant.setSubscriptionStatus(SubscriptionStatus.PENDING);
+        tenant.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
         when(tenantRepository.findByTenantAdminEmail("admin@example.com")).thenReturn(Optional.of(tenant));
+        when(jwtService.generateToken(admin)).thenReturn("token");
 
-        assertThrows(UnauthorizedException.class, () -> authService.login(request));
+        AuthResponse response = authService.login(request);
+        assertEquals("token", response.getToken());
+        assertTrue(response.getTenantExists());
+    }
+
+    @Test
+    void loginTenantAdminWithoutTenant() {
+        LoginRequest request = new LoginRequest();
+        request.email = "admin@example.com";
+        request.password = "pass";
+
+        Admin admin = new Admin();
+        admin.setPassword("hash");
+        admin.setRole(AdminRole.TENANT_ADMIN);
+        when(adminRepository.findByEmail("admin@example.com")).thenReturn(Optional.of(admin));
+        when(passwordEncoder.matches("pass", "hash")).thenReturn(true);
+        when(tenantRepository.findByTenantAdminEmail("admin@example.com")).thenReturn(Optional.empty());
+        when(jwtService.generateToken(admin)).thenReturn("token");
+
+        AuthResponse response = authService.login(request);
+        assertEquals("token", response.getToken());
+        assertFalse(response.getTenantExists());
     }
 }
