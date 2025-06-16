@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 @Entity
+@Table(name = "employee")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @PrimaryKeyJoinColumn(name = "employee_id", referencedColumnName = "user_id")

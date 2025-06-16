@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
+@Table(name = "user")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
@@ -12,9 +13,9 @@ import lombok.EqualsAndHashCode;
 public class User extends BaseAccount {
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "role", nullable = false)
     private Role role;
 
-    @Column(nullable = false)
+    @Column(name = "password_reset_required", nullable = false)
     private boolean passwordResetRequired = false;
 }

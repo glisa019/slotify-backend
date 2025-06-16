@@ -7,24 +7,26 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 @Entity
+@Table(name = "time_slot")
 @Data
 public class TimeSlot {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "slot_id")
     private UUID slotId;
 
-    @Column(nullable = false)
+    @Column(name = "start_time", nullable = false)
     private LocalTime startTime;
 
-    @Column(nullable = false)
+    @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false)
     private SlotStatus status;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "availability_id", nullable = false)
     private EmployeeAvailability availability;
 
     @OneToOne

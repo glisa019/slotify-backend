@@ -7,19 +7,25 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
+@Table(name = "service")
 @Data
 public class Service {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "service_id")
     private UUID serviceId;
-    @Column(nullable = false)
+
+    @Column(name = "name", nullable = false)
     private String name;
-    @Column(nullable = false)
+
+    @Column(name = "description", nullable = false)
     private String description;
-    @Column(nullable = false)
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "duration", nullable = false)
     private Interval duration;
-    @Column(nullable = false)
+
+    @Column(name = "price", nullable = false)
     private BigDecimal price;
 }
