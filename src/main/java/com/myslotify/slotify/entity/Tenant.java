@@ -3,6 +3,7 @@ package com.myslotify.slotify.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -22,9 +23,11 @@ public class Tenant {
     private String description;
     @Column(name = "subscription_status", nullable = false)
     private SubscriptionStatus subscriptionStatus;
+  
     @OneToOne
-    @JoinColumn(name = "user_id")
-    private User tenantAdmin;
+    @JoinColumn(name = "admin_id")
+    private Admin tenantAdmin;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
