@@ -35,6 +35,8 @@ class AppointmentServiceImplTest {
     private EmployeeRepository employeeRepository;
     @Mock
     private NotificationService notificationService;
+    @Mock
+    private TenantRepository tenantRepository;
 
     @InjectMocks
     private AppointmentServiceImpl appointmentService;
@@ -114,6 +116,9 @@ class AppointmentServiceImplTest {
 
     @Test
     void sendRemindersMarksAppointments() {
+        Tenant tenant = new Tenant();
+        tenant.setSchemaName("tenant1");
+        when(tenantRepository.findAll()).thenReturn(java.util.Collections.singletonList(tenant));
         Appointment appt = new Appointment();
         appt.setAppointmentTime(java.time.LocalDateTime.now().plusHours(1));
         appt.setService(service);
