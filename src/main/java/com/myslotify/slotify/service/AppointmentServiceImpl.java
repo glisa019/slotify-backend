@@ -5,6 +5,7 @@ import com.myslotify.slotify.exception.BadRequestException;
 import com.myslotify.slotify.exception.NotFoundException;
 import com.myslotify.slotify.exception.UnauthorizedException;
 import com.myslotify.slotify.repository.*;
+import com.myslotify.slotify.util.TenantContext;
 import org.springframework.security.core.Authentication;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -21,19 +22,22 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final UserRepository userRepository;
     private final EmployeeRepository employeeRepository;
     private final NotificationService notificationService;
+    private final TenantRepository tenantRepository;
 
     public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
                                   TimeSlotRepository timeSlotRepository,
                                   ServiceRepository serviceRepository,
                                   UserRepository userRepository,
                                   EmployeeRepository employeeRepository,
-                                  NotificationService notificationService) {
+                                  NotificationService notificationService,
+                                  TenantRepository tenantRepository) {
         this.appointmentRepository = appointmentRepository;
         this.timeSlotRepository = timeSlotRepository;
         this.serviceRepository = serviceRepository;
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
         this.notificationService = notificationService;
+        this.tenantRepository = tenantRepository;
     }
 
     @Override
@@ -163,20 +167,28 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
-    // Runs hourly to send reminders for appointments in the next 24 hours
+    // Runs hourly to send reminders for appointments in the next 24 hours for each tenant
     @Override
     @Scheduled(cron = "0 0 * * * *")
     public void sendRemindersForUpcomingAppointments() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime tomorrow = now.plusHours(24);
-        List<Appointment> upcoming = appointmentRepository
-                .findByAppointmentTimeBetweenAndReminderSentFalse(now, tomorrow);
-        for (Appointment appt : upcoming) {
-            notificationService.sendAppointmentReminder(appt);
-            appt.setReminderSent(true);
-        }
-        if (!upcoming.isEmpty()) {
-            appointmentRepository.saveAll(upcoming);
+        List<Tenant> tenants = tenantRepository.findAll();
+        for (Tenant tenant : tenants) {
+            try {
+                TenantContext.setCurrentTenant(tenant.getSchemaName());
+                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime tomorrow = now.plusHours(24);
+                List<Appointment> upcoming = appointmentRepository
+                        .findByAppointmentTimeBetweenAndReminderSentFalse(now, tomorrow);
+                for (Appointment appt : upcoming) {
+                    notificationService.sendAppointmentReminder(appt);
+                    appt.setReminderSent(true);
+                }
+                if (!upcoming.isEmpty()) {
+                    appointmentRepository.saveAll(upcoming);
+                }
+            } finally {
+                TenantContext.clear();
+            }
         }
     }
 }
