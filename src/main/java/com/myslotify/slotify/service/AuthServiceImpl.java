@@ -52,16 +52,20 @@ public class AuthServiceImpl implements AuthService {
                 throw new UnauthorizedException("Invalid credentials");
             }
 
+            Boolean tenantExists = null;
             if (admin.getRole() == AdminRole.TENANT_ADMIN) {
-                Tenant tenant = tenantRepository.findByTenantAdminEmail(admin.getEmail())
-                        .orElseThrow(() -> new UnauthorizedException("Tenant not found"));
-                if (tenant.getSubscriptionStatus() == SubscriptionStatus.INACTIVE) {
-                    throw new UnauthorizedException("Tenant subscription inactive");
-                }
+                tenantExists = tenantRepository.findByTenantAdminEmail(admin.getEmail())
+                        .map(tenant -> {
+                            if (tenant.getSubscriptionStatus() == SubscriptionStatus.INACTIVE) {
+                                throw new UnauthorizedException("Tenant subscription inactive");
+                            }
+                            return true;
+                        })
+                        .orElse(false);
             }
 
             String token = jwtService.generateToken(admin);
-            return new AuthResponse("Login successful", token, admin, false);
+            return new AuthResponse("Login successful", token, admin, false, tenantExists);
         }
 
         Tenant tenant = tenantRepository.findBySchemaName(TenantContext.getCurrentTenant())
