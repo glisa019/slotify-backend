@@ -7,10 +7,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@Table(name = "appointment")
 @Data
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "appointment_id")
     private UUID appointmentId;
 
     @ManyToOne
@@ -21,7 +23,7 @@ public class Appointment {
     @JoinColumn(name = "customer_id", nullable = false)
     private User customer;
 
-    @Column(nullable = false)
+    @Column(name = "appointment_time", nullable = false)
     private LocalDateTime appointmentTime;
 
     @ManyToOne
@@ -29,9 +31,9 @@ public class Appointment {
     private Service service;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false)
     private AppointmentStatus status;
 
-    @Column(nullable = false)
+    @Column(name = "reminder_sent", nullable = false)
     private boolean reminderSent = false;
 }

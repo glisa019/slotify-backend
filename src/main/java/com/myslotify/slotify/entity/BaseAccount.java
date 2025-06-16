@@ -18,12 +18,12 @@ public abstract class BaseAccount {
     @Column(nullable = false, name = "last_name")
     private String lastName;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "phone", nullable = false, unique = true)
     private String phone;
 
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 }

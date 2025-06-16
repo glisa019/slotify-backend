@@ -13,29 +13,52 @@ import java.util.UUID;
 public class Tenant {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "tenant_id")
     private UUID tenantId;
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
-    @Column(nullable = false, unique = true)
+    @Column(name = "schema_name", nullable = false, unique = true)
     private String schemaName;
-    @Column(nullable = false)
+    @Column(name = "description", nullable = false)
     private String description;
-    @Column(nullable = false)
+    @Column(name = "subscription_status", nullable = false)
     private SubscriptionStatus subscriptionStatus;
+  
     @OneToOne
     @JoinColumn(name = "admin_id")
     private Admin tenantAdmin;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "motto")
     private String motto;
+
+    @Column(name = "address")
     private String address;
+
+    @Column(name = "phone")
     private String phone;
+
+    @Column(name = "tiktok")
     private String tiktok;
+
+    @Column(name = "instagram")
     private String instagram;
+
+    @Column(name = "text_colour")
     private String textColour;
+
+    @Column(name = "background_colour")
     private String backgroundColour;
+
+    @Column(name = "border_colour")
     private String borderColour;
+
+    @Column(name = "font")
     private String font;
 
     @Column(name = "logo_url")
