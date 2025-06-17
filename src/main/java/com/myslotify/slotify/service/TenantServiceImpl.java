@@ -173,7 +173,6 @@ public class TenantServiceImpl implements TenantService {
             String coverPath = fileStorageService.store(request.getCoverPicture());
             tenant.setCoverPictureUrl(coverPath);
         }
-        tenant.setUpdatedAt(LocalDateTime.now());
 
         tenantRepository.save(tenant);
         return tenant;

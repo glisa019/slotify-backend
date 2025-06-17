@@ -31,9 +31,6 @@ public class Tenant {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
     @Column(name = "motto")
     private String motto;
 

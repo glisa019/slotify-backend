@@ -21,9 +21,6 @@
       <column name="created_at" type="TIMESTAMP">
         <constraints nullable="false"/>
       </column>
-      <column name="updated_at" type="TIMESTAMP">
-        <constraints nullable="false"/>
-      </column>
       <column name="motto" type="VARCHAR(255)"/>
       <column name="address" type="VARCHAR(255)"/>
       <column name="phone" type="VARCHAR(255)"/>

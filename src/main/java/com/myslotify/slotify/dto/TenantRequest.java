@@ -11,7 +11,6 @@ public class TenantRequest {
     private String schemaName;
     private String description;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     private String motto;
     private String address;
