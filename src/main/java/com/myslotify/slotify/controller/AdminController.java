@@ -1,7 +1,7 @@
 package com.myslotify.slotify.controller;
 
+import com.myslotify.slotify.dto.AuthResponse;
 import com.myslotify.slotify.dto.CreateUserRequest;
-import com.myslotify.slotify.entity.Admin;
 import com.myslotify.slotify.service.AdminService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +20,7 @@ public class AdminController {
     }
 
     @PostMapping("/tenant")
-    public ResponseEntity<Admin> createTenantAdmin(@RequestBody CreateUserRequest request) {
+    public ResponseEntity<AuthResponse> createTenantAdmin(@RequestBody CreateUserRequest request) {
         return ResponseEntity.ok(adminService.createTenantAdmin(request));
     }
 }

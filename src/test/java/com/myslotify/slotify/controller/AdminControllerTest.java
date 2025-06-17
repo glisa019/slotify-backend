@@ -1,6 +1,7 @@
 package com.myslotify.slotify.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.myslotify.slotify.dto.AuthResponse;
 import com.myslotify.slotify.dto.CreateUserRequest;
 import com.myslotify.slotify.entity.Admin;
 import com.myslotify.slotify.service.AdminService;
@@ -30,7 +31,8 @@ class AdminControllerTest {
     @Test
     void createTenantAdminReturnsOk() throws Exception {
         CreateUserRequest request = new CreateUserRequest();
-        Mockito.when(adminService.createTenantAdmin(Mockito.any())).thenReturn(new Admin());
+        Mockito.when(adminService.createTenantAdmin(Mockito.any()))
+                .thenReturn(new AuthResponse("ok", "token", new Admin(), false));
 
         mockMvc.perform(post("/api/admins/tenant")
                 .contentType(MediaType.APPLICATION_JSON)

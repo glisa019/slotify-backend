@@ -1,10 +1,12 @@
 package com.myslotify.slotify.service;
 
+import com.myslotify.slotify.dto.AuthResponse;
 import com.myslotify.slotify.dto.CreateUserRequest;
 import com.myslotify.slotify.entity.Admin;
 import com.myslotify.slotify.entity.AdminRole;
 import com.myslotify.slotify.exception.BadRequestException;
 import com.myslotify.slotify.repository.AdminRepository;
+import com.myslotify.slotify.service.JwtService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,6 +26,8 @@ class AdminServiceImplTest {
     private AdminRepository adminRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private JwtService jwtService;
 
     @InjectMocks
     private AdminServiceImpl adminService;
@@ -40,10 +44,13 @@ class AdminServiceImplTest {
         when(adminRepository.findByEmail("admin@example.com")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("pass")).thenReturn("hash");
         when(adminRepository.save(any(Admin.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(jwtService.generateToken(any(Admin.class))).thenReturn("token");
 
-        Admin admin = adminService.createTenantAdmin(request);
+        AuthResponse response = adminService.createTenantAdmin(request);
+        Admin admin = (Admin) response.getAccount();
         assertEquals(AdminRole.TENANT_ADMIN, admin.getRole());
         assertEquals("hash", admin.getPassword());
+        assertEquals("token", response.getToken());
     }
 
     @Test
