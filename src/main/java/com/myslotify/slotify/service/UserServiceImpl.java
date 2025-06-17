@@ -12,6 +12,7 @@ import com.myslotify.slotify.repository.EmployeeRepository;
 import com.myslotify.slotify.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.Authentication;
+import com.myslotify.slotify.util.SecurityUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public Employee getCurrentEmployee(Authentication auth) {
-        String email = auth.getName();
+        String email = SecurityUtil.extractEmail(auth);
         return employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Employee not found"));
     }
@@ -64,7 +65,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public User getCurrentUser(Authentication auth) {
-        String email = auth.getName();
+        String email = SecurityUtil.extractEmail(auth);
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }
