@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import com.myslotify.slotify.util.SecurityUtil;
 import com.myslotify.slotify.util.TenantContext;
 
 import javax.sql.DataSource;
@@ -55,7 +56,7 @@ public class TenantServiceImpl implements TenantService {
     @Override
     public TenantResponse createTenant(TenantRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication != null ? authentication.getName() : null;
+        String email = SecurityUtil.extractEmail(authentication);
 
         Tenant tenant = new Tenant();
         tenant.setName(request.getName());

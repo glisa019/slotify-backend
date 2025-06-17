@@ -9,6 +9,7 @@ import com.myslotify.slotify.repository.EmployeeAvailabilityRepository;
 import com.myslotify.slotify.repository.EmployeeRepository;
 import com.myslotify.slotify.repository.TimeSlotRepository;
 import com.myslotify.slotify.repository.ServiceRepository;
+import com.myslotify.slotify.util.SecurityUtil;
 import org.springframework.security.core.Authentication;
 
 import java.time.LocalDate;
@@ -34,7 +35,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     }
 
     private Employee getCurrentEmployee(Authentication authentication) {
-        String email = authentication.getName();
+        String email = SecurityUtil.extractEmail(authentication);
         return employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Employee not found"));
     }
