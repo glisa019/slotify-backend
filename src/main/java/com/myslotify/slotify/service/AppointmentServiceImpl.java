@@ -6,6 +6,7 @@ import com.myslotify.slotify.exception.NotFoundException;
 import com.myslotify.slotify.exception.UnauthorizedException;
 import com.myslotify.slotify.repository.*;
 import com.myslotify.slotify.util.TenantContext;
+import com.myslotify.slotify.util.SecurityUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -52,13 +53,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private User getCurrentUser(Authentication auth) {
-        String email = auth.getName();
+        String email = SecurityUtil.extractEmail(auth);
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     private Employee getCurrentEmployee(Authentication auth) {
-        String email = auth.getName();
+        String email = SecurityUtil.extractEmail(auth);
         return employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Employee not found"));
     }
