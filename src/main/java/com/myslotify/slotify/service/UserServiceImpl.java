@@ -111,7 +111,8 @@ public class UserServiceImpl implements UserService {
         notificationService.sendEmail(
                 employee.getEmail(),
                 "Employee Account Created",
-                "Your account has been created. Please log in to start managing appointments.");
+                "Your account has been created. Your temporary password is: " + request.getPassword() +
+                        ". Please change it on first login.");
 
         return saved;
     }
