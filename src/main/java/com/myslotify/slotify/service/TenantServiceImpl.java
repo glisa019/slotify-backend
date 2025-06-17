@@ -47,7 +47,7 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Value("${stripe.success.url}")
-    private String successUrl;
+    private String successUrlBase;
 
     @Value("${stripe.cancel.url}")
     private String cancelUrl;
@@ -86,6 +86,7 @@ public class TenantServiceImpl implements TenantService {
         String sessionUrl = null;
         try {
             if (email != null) {
+                String successUrl = String.format("%s/tenant/%s/form", successUrlBase, tenant.getSchemaName());
                 sessionUrl = stripeService.createSubscriptionSession(email, successUrl, cancelUrl);
             }
         } catch (Exception e) {
@@ -115,6 +116,7 @@ public class TenantServiceImpl implements TenantService {
 
         String sessionUrl;
         try {
+            String successUrl = String.format("%s/tenant/%s/form", successUrlBase, tenant.getSchemaName());
             sessionUrl = stripeService.createSubscriptionSession(
                     tenant.getTenantAdmin().getEmail(), successUrl, cancelUrl);
         } catch (Exception e) {
