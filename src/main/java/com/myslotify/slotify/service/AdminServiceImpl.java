@@ -1,5 +1,6 @@
 package com.myslotify.slotify.service;
 
+import com.myslotify.slotify.dto.AuthResponse;
 import com.myslotify.slotify.dto.CreateUserRequest;
 import com.myslotify.slotify.entity.Admin;
 import com.myslotify.slotify.entity.AdminRole;
@@ -15,14 +16,18 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public AdminServiceImpl(AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
+    public AdminServiceImpl(AdminRepository adminRepository,
+                           PasswordEncoder passwordEncoder,
+                           JwtService jwtService) {
         this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @Override
-    public Admin createTenantAdmin(CreateUserRequest request) {
+    public AuthResponse createTenantAdmin(CreateUserRequest request) {
         Optional<Admin> existing = adminRepository.findByEmail(request.getEmail());
         if (existing.isPresent()) {
             throw new BadRequestException("Admin already exists");
@@ -36,6 +41,10 @@ public class AdminServiceImpl implements AdminService {
         admin.setPassword(passwordEncoder.encode(request.getPassword()));
         admin.setRole(AdminRole.TENANT_ADMIN);
 
-        return adminRepository.save(admin);
+        adminRepository.save(admin);
+
+        String token = jwtService.generateToken(admin);
+
+        return new AuthResponse("Admin registered successfully", token, admin, false);
     }
 }
