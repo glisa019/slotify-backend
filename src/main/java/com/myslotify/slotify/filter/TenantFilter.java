@@ -1,6 +1,7 @@
 package com.myslotify.slotify.filter;
 
 import com.myslotify.slotify.util.TenantContext;
+import org.slf4j.MDC;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,11 +20,13 @@ public class TenantFilter extends OncePerRequestFilter {
         String tenantId = request.getHeader("X-Tenant-ID"); // Pass tenant identifier in a header
         if (tenantId != null) {
             TenantContext.setCurrentTenant(tenantId);
+            MDC.put("tenant", tenantId);
         }
         try {
             filterChain.doFilter(request, response);
         } finally {
             TenantContext.clear();
+            MDC.remove("tenant");
         }
     }
 }
