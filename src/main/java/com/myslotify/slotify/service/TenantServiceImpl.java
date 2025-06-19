@@ -87,7 +87,7 @@ public class TenantServiceImpl implements TenantService {
         String sessionUrl = null;
         try {
             if (email != null) {
-                String successUrl = String.format("%s/tenant/%s/form", successUrlBase, tenant.getSchemaName());
+                String successUrl = String.format("%s/tenant/%s/view", successUrlBase, tenant.getSchemaName());
                 sessionUrl = stripeService.createSubscriptionSession(email, successUrl, cancelUrl);
             }
         } catch (Exception e) {
