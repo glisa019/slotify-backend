@@ -10,6 +10,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -20,6 +22,8 @@ import java.util.Date;
 @Service
 public class JwtServiceImpl implements JwtService {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtServiceImpl.class);
+
     private final String secretKey;
 
     public JwtServiceImpl(@Value("${app.jwt.secret}") String secretKey) {
@@ -27,6 +31,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     public String generateToken(BaseAccount account) {
+        logger.debug("Generating token for {}", account.getEmail());
         String role;
         if (account instanceof Admin admin) {
             role = admin.getRole().name();

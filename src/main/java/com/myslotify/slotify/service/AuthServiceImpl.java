@@ -18,9 +18,12 @@ import com.myslotify.slotify.repository.TenantRepository;
 import com.myslotify.slotify.util.TenantContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class AuthServiceImpl implements AuthService {
+    private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
     private final UserRepository userRepository;
     private final AdminRepository adminRepository;
     private final EmployeeRepository employeeRepository;
@@ -44,6 +47,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse login(LoginRequest request) {
+        logger.info("Login attempt for {}", request.getEmail());
         if (TenantContext.getCurrentTenant() == null) {
             Admin admin = adminRepository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
@@ -92,6 +96,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse resetPassword(ResetPasswordRequest request) {
+        logger.info("Resetting password for {}", request.getEmail());
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
 

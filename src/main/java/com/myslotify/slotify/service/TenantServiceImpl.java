@@ -17,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.myslotify.slotify.util.SecurityUtil;
 import com.myslotify.slotify.util.TenantContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -28,6 +30,8 @@ import java.util.regex.Pattern;
 
 @Service
 public class TenantServiceImpl implements TenantService {
+
+    private static final Logger logger = LoggerFactory.getLogger(TenantServiceImpl.class);
 
     private final DataSource dataSource;
     private final TenantRepository tenantRepository;
@@ -60,6 +64,7 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public TenantResponse createTenant(TenantRequest request) {
+        logger.info("Creating tenant {}", request.getSchemaName());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = SecurityUtil.extractEmail(authentication);
         Admin admin = null;
@@ -110,6 +115,7 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public TenantResponse getCurrentTenant() {
+        logger.info("Fetching current tenant");
         String schema = TenantContext.getCurrentTenant();
         if (schema == null) {
             throw new BadRequestException("Missing tenant context");
@@ -140,6 +146,7 @@ public class TenantServiceImpl implements TenantService {
 
     @Transactional
     public Tenant activateTenant() {
+        logger.info("Activating current tenant");
         String schema = TenantContext.getCurrentTenant();
         if (schema == null) {
             throw new BadRequestException("Missing tenant context");
@@ -160,6 +167,7 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public Tenant updateTenant(TenantRequest request) {
+        logger.info("Updating tenant in context");
         String schema = TenantContext.getCurrentTenant();
         if (schema == null) {
             throw new BadRequestException("Missing tenant context");
@@ -217,22 +225,26 @@ public class TenantServiceImpl implements TenantService {
 
     @Override
     public List<Tenant> getAllTenants() {
+        logger.info("Fetching all tenants");
         return tenantRepository.findAll();
     }
 
     @Override
     public Tenant getTenantById(UUID id) {
+        logger.info("Fetching tenant by id {}", id);
         return tenantRepository.findById(id).orElseThrow(() -> new NotFoundException("Tenant not found"));
     }
 
     @Override
     public Tenant getTenantByKey(String key) {
+        logger.info("Fetching tenant by key {}", key);
         return tenantRepository.findBySchemaName(key)
                 .orElseThrow(() -> new NotFoundException("Tenant not found"));
     }
 
     @Override
     public void deleteTenant(UUID id) {
+        logger.info("Deactivating tenant {}", id);
         Tenant tenant = tenantRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Tenant not found"));
         tenant.setSubscriptionStatus(SubscriptionStatus.INACTIVE);
@@ -242,6 +254,7 @@ public class TenantServiceImpl implements TenantService {
     @Override
     @Transactional
     public Tenant activateTenant(UUID id) {
+        logger.info("Activating tenant {}", id);
         Tenant tenant = tenantRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Tenant not found"));
 

@@ -8,11 +8,15 @@ import com.myslotify.slotify.exception.BadRequestException;
 import com.myslotify.slotify.repository.AdminRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
 @Service
 public class AdminServiceImpl implements AdminService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AdminServiceImpl.class);
 
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
@@ -28,6 +32,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AuthResponse createTenantAdmin(CreateUserRequest request) {
+        logger.info("Creating tenant admin with email {}", request.getEmail());
         Optional<Admin> existing = adminRepository.findByEmail(request.getEmail());
         if (existing.isPresent()) {
             throw new BadRequestException("Admin already exists");

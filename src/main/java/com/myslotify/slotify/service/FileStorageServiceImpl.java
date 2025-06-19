@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +17,8 @@ import java.util.UUID;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
+
+    private static final Logger logger = LoggerFactory.getLogger(FileStorageServiceImpl.class);
 
     private final Path storageLocation;
 
@@ -32,6 +36,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         if (file == null || file.isEmpty()) {
             return null;
         }
+        logger.info("Storing file {}", file.getOriginalFilename());
         String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
         String filename = UUID.randomUUID() + "_" + originalFilename;
         Path target = this.storageLocation.resolve(filename);

@@ -9,9 +9,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
+
+    private static final Logger logger = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
     private final JavaMailSender mailSender;
 
@@ -38,6 +42,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendEmail(String to, String subject, String body) {
+        logger.debug("Sending email to {} with subject {}", to, subject);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject(subject);
@@ -51,6 +56,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendSms(String to, String message) {
+        logger.debug("Sending SMS to {}", to);
         if (!twilioInitialized || twilioFromPhone.isEmpty()) {
             return;
         }

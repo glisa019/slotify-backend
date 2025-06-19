@@ -8,10 +8,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/admins")
 public class AdminController {
+
+    private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     private final AdminService adminService;
 
@@ -21,6 +25,7 @@ public class AdminController {
 
     @PostMapping("/tenant")
     public ResponseEntity<AuthResponse> createTenantAdmin(@RequestBody CreateUserRequest request) {
+        logger.info("Creating tenant admin with email {}", request.getEmail());
         return ResponseEntity.ok(adminService.createTenantAdmin(request));
     }
 }
