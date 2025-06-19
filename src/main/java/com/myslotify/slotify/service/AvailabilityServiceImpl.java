@@ -11,6 +11,8 @@ import com.myslotify.slotify.repository.TimeSlotRepository;
 import com.myslotify.slotify.repository.ServiceRepository;
 import com.myslotify.slotify.util.SecurityUtil;
 import org.springframework.security.core.Authentication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,6 +20,8 @@ import java.util.*;
 
 @org.springframework.stereotype.Service
 public class AvailabilityServiceImpl implements AvailabilityService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AvailabilityServiceImpl.class);
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeAvailabilityRepository availabilityRepository;
@@ -41,12 +45,13 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     }
 
     public List<EmployeeAvailability> getAvailabilityForEmployee(Authentication auth) {
+        logger.info("Fetching availability for current employee");
         Employee employee = getCurrentEmployee(auth);
         return availabilityRepository.findByEmployeeId(employee.getId());
     }
 
     public List<EmployeeAvailability> createAvailabilityForDates(CreateAvailabilityRequest request, Authentication auth) {
-
+        logger.info("Creating availability for dates {}", request.getDates());
         Employee employee = getCurrentEmployee(auth);
 
         List<EmployeeAvailability> availabilities = new ArrayList<>();
@@ -94,6 +99,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     }
 
     public void deleteAvailability(UUID availabilityId, Authentication auth) {
+        logger.info("Deleting availability {}", availabilityId);
         Employee employee = getCurrentEmployee(auth);
         EmployeeAvailability availability = availabilityRepository.findById(availabilityId)
                 .orElseThrow(() -> new NotFoundException("Availability not found"));
@@ -107,6 +113,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     }
 
     public void blockTimeSlot(UUID timeSlotId, Authentication auth) {
+        logger.info("Blocking time slot {}", timeSlotId);
         Employee employee = getCurrentEmployee(auth);
         TimeSlot slot = timeSlotRepository.findById(timeSlotId)
                 .orElseThrow(() -> new NotFoundException("Time slot not found"));
@@ -125,6 +132,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     }
 
     public void unblockTimeSlot(UUID timeSlotId, Authentication auth) {
+        logger.info("Unblocking time slot {}", timeSlotId);
         Employee employee = getCurrentEmployee(auth);
         TimeSlot slot = timeSlotRepository.findById(timeSlotId)
                 .orElseThrow(() -> new NotFoundException("Time slot not found"));
@@ -142,6 +150,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     }
 
     public List<TimeSlot> getAvailableTimeSlotsForEmployee(Authentication auth) {
+        logger.info("Fetching available time slots for current employee");
         Employee employee = getCurrentEmployee(auth);
         return timeSlotRepository
                 .findAllByAvailabilityEmployeeIdAndStatus(employee.getId(), SlotStatus.AVAILABLE);

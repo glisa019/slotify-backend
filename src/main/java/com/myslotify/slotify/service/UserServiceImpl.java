@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import com.myslotify.slotify.util.SecurityUtil;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +23,8 @@ import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
     private final EmployeeRepository employeeRepository;
@@ -41,36 +45,43 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<Employee> getAllEmployees() {
+        logger.info("Fetching all employees");
         return employeeRepository.findAll();
     }
 
     public Employee getEmployee(UUID id) {
+        logger.info("Fetching employee {}", id);
         return employeeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Employee not found"));
     }
 
     public Employee getCurrentEmployee(Authentication auth) {
+        logger.info("Fetching current employee");
         String email = SecurityUtil.extractEmail(auth);
         return employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Employee not found"));
     }
 
     public List<User> getAllUsers() {
+        logger.info("Fetching all users");
         return userRepository.findAll();
     }
 
     public User getUser(UUID id) {
+        logger.info("Fetching user {}", id);
         return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     public User getCurrentUser(Authentication auth) {
+        logger.info("Fetching current user");
         String email = SecurityUtil.extractEmail(auth);
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     public AuthResponse createUser(CreateUserRequest request) {
+        logger.info("Creating user {}", request.getEmail());
         Optional<User> existing = userRepository.findByEmail(request.getEmail());
         if (existing.isPresent()) {
             throw new BadRequestException("User already exists");
@@ -93,6 +104,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public Employee createEmployee(CreateUserRequest request) {
+        logger.info("Creating employee {}", request.getEmail());
         Optional<Employee> existing = employeeRepository.findByEmail(request.getEmail());
         if (existing.isPresent()) {
             throw new BadRequestException("Employee already exists");
@@ -119,6 +131,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public User updateUser(UUID id, UpdateUserRequest request) {
+        logger.info("Updating user {}", id);
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
         user.setFirstName(request.getFirstName());
@@ -129,10 +142,12 @@ public class UserServiceImpl implements UserService {
     }
 
     public void deleteEmployee(UUID id) {
+        logger.info("Deleting employee {}", id);
         employeeRepository.deleteById(id);
     }
 
     public void deleteUser(UUID id) {
+        logger.info("Deleting user {}", id);
         userRepository.deleteById(id);
     }
 }

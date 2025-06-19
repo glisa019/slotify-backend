@@ -10,12 +10,16 @@ import com.stripe.param.checkout.SessionCreateParams;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class StripeServiceImpl implements StripeService {
+
+    private static final Logger logger = LoggerFactory.getLogger(StripeServiceImpl.class);
 
     @Value("${stripe.api.secret}")
     private String stripeSecretKey;
@@ -30,6 +34,7 @@ public class StripeServiceImpl implements StripeService {
 
     @Override
     public String createSubscriptionSession(String email, String successUrl, String cancelUrl) throws Exception {
+        logger.info("Creating Stripe subscription session for {}", email);
         SessionCreateParams params = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
                 .setCustomerEmail(email)
@@ -49,6 +54,7 @@ public class StripeServiceImpl implements StripeService {
 
     @Override
     public boolean isSubscriptionActive(String email) throws Exception {
+        logger.info("Checking subscription status for {}", email);
         Map<String, Object> customerParams = new HashMap<>();
         customerParams.put("email", email);
         customerParams.put("limit", 1L);

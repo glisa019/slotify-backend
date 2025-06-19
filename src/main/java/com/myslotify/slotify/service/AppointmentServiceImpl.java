@@ -9,6 +9,8 @@ import com.myslotify.slotify.util.TenantContext;
 import com.myslotify.slotify.util.SecurityUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +18,8 @@ import java.util.UUID;
 
 @org.springframework.stereotype.Service
 public class AppointmentServiceImpl implements AppointmentService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AppointmentServiceImpl.class);
 
     private final AppointmentRepository appointmentRepository;
     private final TimeSlotRepository timeSlotRepository;
@@ -43,12 +47,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Appointment getAppointment(UUID id) {
+        logger.info("Fetching appointment {}", id);
         return appointmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Appointment not found"));
     }
 
     @Override
     public List<Appointment> getAppointmentsBetween(LocalDateTime start, LocalDateTime end) {
+        logger.info("Fetching appointments between {} and {}", start, end);
         return appointmentRepository.findByAppointmentTimeBetween(start, end);
     }
 
@@ -66,12 +72,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Appointment createAppointment(UUID slotId, UUID serviceId, Authentication auth) {
+        logger.info("Creating appointment for slot {} and service {}", slotId, serviceId);
         User customer = getCurrentUser(auth);
         return createAppointmentInternal(slotId, serviceId, customer);
     }
 
     @Override
     public Appointment createAppointmentForCustomer(UUID slotId, UUID serviceId, UUID customerId, Authentication auth) {
+        logger.info("Employee creating appointment for customer {} on slot {} service {}", customerId, slotId, serviceId);
         Employee employee = getCurrentEmployee(auth);
         TimeSlot slot = timeSlotRepository.findById(slotId)
                 .orElseThrow(() -> new NotFoundException("Time slot not found"));
@@ -136,6 +144,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void cancelAppointment(UUID appointmentId, Authentication auth) {
+        logger.info("Cancelling appointment {} as customer", appointmentId);
         User user = getCurrentUser(auth);
         Appointment appointment = getAppointment(appointmentId);
         if (!appointment.getCustomer().getId().equals(user.getId())) {
@@ -146,6 +155,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void cancelAppointmentAsEmployee(UUID appointmentId, Authentication auth) {
+        logger.info("Cancelling appointment {} as employee", appointmentId);
         Employee employee = getCurrentEmployee(auth);
         Appointment appointment = getAppointment(appointmentId);
         if (!appointment.getEmployee().getId().equals(employee.getId())) {
@@ -172,9 +182,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Scheduled(cron = "0 0 * * * *")
     public void sendRemindersForUpcomingAppointments() {
+        logger.info("Sending appointment reminders for all tenants");
         List<Tenant> tenants = tenantRepository.findAll();
         for (Tenant tenant : tenants) {
             try {
+                logger.info("Processing reminders for tenant {}", tenant.getName());
                 TenantContext.setCurrentTenant(tenant.getSchemaName());
                 LocalDateTime now = LocalDateTime.now();
                 LocalDateTime tomorrow = now.plusHours(24);
