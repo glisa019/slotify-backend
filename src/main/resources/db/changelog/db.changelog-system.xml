@@ -3,7 +3,9 @@
   <changeSet id="create-system-schema" author="codex">
     <preConditions onFail="MARK_RAN">
       <not>
-        <schemaExists schemaName="system"/>
+        <sqlCheck expectedResult="0">
+          SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = 'system'
+        </sqlCheck>
       </not>
     </preConditions>
     <createSchema schemaName="system"/>
