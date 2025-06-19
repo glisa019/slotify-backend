@@ -4,9 +4,11 @@ import com.myslotify.slotify.dto.TenantRequest;
 import com.myslotify.slotify.dto.TenantResponse;
 import com.myslotify.slotify.entity.SubscriptionStatus;
 import com.myslotify.slotify.entity.Tenant;
+import com.myslotify.slotify.entity.Admin;
 import com.myslotify.slotify.exception.BadRequestException;
 import com.myslotify.slotify.exception.NotFoundException;
 import com.myslotify.slotify.repository.TenantRepository;
+import com.myslotify.slotify.repository.AdminRepository;
 import jakarta.transaction.Transactional;
 import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +31,7 @@ public class TenantServiceImpl implements TenantService {
 
     private final DataSource dataSource;
     private final TenantRepository tenantRepository;
+    private final AdminRepository adminRepository;
     private final SpringLiquibase springLiquibase;
     private final StripeService stripeService;
     private final FileStorageService fileStorageService;
@@ -39,12 +42,14 @@ public class TenantServiceImpl implements TenantService {
                              TenantRepository tenantRepository,
                              SpringLiquibase springLiquibase,
                              StripeService stripeService,
-                             FileStorageService fileStorageService) {
+                             FileStorageService fileStorageService,
+                             AdminRepository adminRepository) {
         this.dataSource = dataSource;
         this.tenantRepository = tenantRepository;
         this.springLiquibase = springLiquibase;
         this.stripeService = stripeService;
         this.fileStorageService = fileStorageService;
+        this.adminRepository = adminRepository;
     }
 
     @Value("${stripe.success.url}")
@@ -57,6 +62,11 @@ public class TenantServiceImpl implements TenantService {
     public TenantResponse createTenant(TenantRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = SecurityUtil.extractEmail(authentication);
+        Admin admin = null;
+        if (email != null) {
+            admin = adminRepository.findByEmail(email)
+                    .orElseThrow(() -> new BadRequestException("Admin not found"));
+        }
 
         Tenant tenant = new Tenant();
         tenant.setName(request.getName());
@@ -79,6 +89,7 @@ public class TenantServiceImpl implements TenantService {
             String coverPath = fileStorageService.store(request.getCoverPicture());
             tenant.setCoverPictureUrl(coverPath);
         }
+        tenant.setTenantAdmin(admin);
         tenant.setCreatedAt(LocalDateTime.now());
         tenant.setSubscriptionStatus(SubscriptionStatus.PENDING);
 

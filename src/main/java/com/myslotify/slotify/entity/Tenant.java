@@ -24,8 +24,8 @@ public class Tenant {
     @Column(name = "subscription_status", nullable = false)
     private SubscriptionStatus subscriptionStatus;
   
-    @OneToOne
-    @JoinColumn(name = "admin_id")
+    @OneToOne(optional = false)
+    @JoinColumn(name = "admin_id", nullable = false)
     private Admin tenantAdmin;
 
     @Column(name = "created_at")

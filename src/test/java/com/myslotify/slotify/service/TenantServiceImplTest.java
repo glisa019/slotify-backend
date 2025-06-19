@@ -4,6 +4,7 @@ import com.myslotify.slotify.entity.SubscriptionStatus;
 import com.myslotify.slotify.entity.Tenant;
 import com.myslotify.slotify.exception.NotFoundException;
 import com.myslotify.slotify.repository.TenantRepository;
+import com.myslotify.slotify.repository.AdminRepository;
 import liquibase.integration.spring.SpringLiquibase;
 import com.myslotify.slotify.util.TenantContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,8 @@ class TenantServiceImplTest {
     private DataSource dataSource;
     @Mock
     private TenantRepository tenantRepository;
+    @Mock
+    private AdminRepository adminRepository;
     @Mock
     private SpringLiquibase springLiquibase;
     @Mock
