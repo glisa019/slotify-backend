@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @PrimaryKeyJoinColumn(name = "employee_id", referencedColumnName = "user_id")
+@AttributeOverride(name = "id", column = @Column(name = "employee_id"))
 public class Employee extends User {
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
