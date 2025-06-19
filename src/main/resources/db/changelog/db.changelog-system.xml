@@ -1,5 +1,13 @@
 <?xml version="1.0" ?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+  <changeSet id="create-system-schema" author="codex">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <schemaExists schemaName="system"/>
+      </not>
+    </preConditions>
+    <createSchema schemaName="system"/>
+  </changeSet>
   <changeSet id="create-tenant-table" author="nikola">
     <createTable tableName="tenant" schemaName="system">
       <column name="tenant_id" type="UUID">

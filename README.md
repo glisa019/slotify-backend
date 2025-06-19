@@ -36,12 +36,8 @@ SPRING_DATASOURCE_PASSWORD=secret
 SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
 ```
 
-Before running the application for the first time, create the `system` schema.
-Liquibase will load its tables into this schema:
-
-```sql
-CREATE SCHEMA system;
-```
+Liquibase automatically creates the `system` schema on first run and loads the
+`tenant` and `admin` tables into it.
 
 ## Environment variables
 
