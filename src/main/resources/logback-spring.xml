@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} [tenant=%X{tenant}] - %msg%n"/>
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %clr([%thread]){faint} %highlight(%-5level) %clr(%logger{36}){cyan} %clr([tenant=%X{tenant}]){magenta} - %msg%n"/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
