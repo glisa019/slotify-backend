@@ -8,7 +8,7 @@
         </sqlCheck>
       </not>
     </preConditions>
-    <createSchema schemaName="system"/>
+    <sql>CREATE SCHEMA system</sql>
   </changeSet>
   <changeSet id="create-tenant-table" author="nikola">
     <createTable tableName="tenant" schemaName="system">
