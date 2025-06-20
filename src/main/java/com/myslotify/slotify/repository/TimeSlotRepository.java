@@ -13,5 +13,5 @@ public interface TimeSlotRepository extends JpaRepository<TimeSlot, UUID> {
 
     java.util.List<TimeSlot> findAllByAppointmentAppointmentId(UUID appointmentId);
 
-    java.util.List<TimeSlot> findAllByAvailabilityEmployeeIdAndStatus(UUID employeeId, SlotStatus status);
+    java.util.List<TimeSlot> findAllByAvailabilityEmployeeEmployeeIdAndStatus(UUID employeeId, SlotStatus status);
 }
