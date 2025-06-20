@@ -16,7 +16,7 @@ public class Appointment {
     private UUID appointmentId;
 
     @ManyToOne
-    @JoinColumn(name = "employee_id", referencedColumnName = "employee_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private Employee employee;
 
     @ManyToOne

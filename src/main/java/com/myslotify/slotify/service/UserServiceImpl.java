@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     public Employee getCurrentEmployee(Authentication auth) {
         logger.info("Fetching current employee");
         String email = SecurityUtil.extractEmail(auth);
-        return employeeRepository.findByEmail(email)
+        return employeeRepository.findByUserEmail(email)
                 .orElseThrow(() -> new NotFoundException("Employee not found"));
     }
 
@@ -105,24 +105,29 @@ public class UserServiceImpl implements UserService {
 
     public Employee createEmployee(CreateUserRequest request) {
         logger.info("Creating employee {}", request.getEmail());
-        Optional<Employee> existing = employeeRepository.findByEmail(request.getEmail());
+        Optional<Employee> existing = employeeRepository.findByUserEmail(request.getEmail());
         if (existing.isPresent()) {
             throw new BadRequestException("Employee already exists");
         }
 
+        User user = new User();
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setPhone(request.getPhone());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.EMPLOYEE);
+        user.setPasswordResetRequired(true);
+
+        userRepository.save(user);
+
         Employee employee = new Employee();
-        employee.setFirstName(request.getFirstName());
-        employee.setLastName(request.getLastName());
-        employee.setPhone(request.getPhone());
-        employee.setEmail(request.getEmail());
-        employee.setPassword(passwordEncoder.encode(request.getPassword()));
-        employee.setRole(Role.EMPLOYEE);
-        employee.setPasswordResetRequired(true);
+        employee.setUser(user);
 
         Employee saved = employeeRepository.save(employee);
 
         notificationService.sendEmail(
-                employee.getEmail(),
+                user.getEmail(),
                 "Employee Account Created",
                 "Your account has been created. Your temporary password is: " + request.getPassword() +
                         ". Please change it on first login.");
