@@ -35,8 +35,6 @@ public class JwtServiceImpl implements JwtService {
         String role;
         if (account instanceof Admin admin) {
             role = admin.getRole().name();
-        } else if (account instanceof Employee employee) {
-            role = employee.getRole().name();
         } else {
             role = ((User) account).getRole().name();
         }
