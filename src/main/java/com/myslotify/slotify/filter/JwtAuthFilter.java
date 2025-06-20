@@ -49,15 +49,29 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
         String email;
+        String role;
         try {
             email = jwtService.extractEmail(token);
+            role = jwtService.extractRole(token);
         } catch (Exception e) {
             filterChain.doFilter(request, response);
             return;
         }
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            if (TenantContext.getCurrentTenant() == null) {
+            if ("TENANT_ADMIN".equals(role) || "ADMIN".equals(role)) {
+                Admin admin = adminRepository.findByEmail(email).orElse(null);
+                if (admin != null) {
+                    try {
+                        if (jwtService.isTokenValid(token, admin)) {
+                            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                                    admin, null, List.of(new SimpleGrantedAuthority("ROLE_" + admin.getRole().name())));
+                            SecurityContextHolder.getContext().setAuthentication(auth);
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+            } else if (TenantContext.getCurrentTenant() == null) {
                 Admin admin = adminRepository.findByEmail(email).orElse(null);
                 if (admin != null) {
                     try {
