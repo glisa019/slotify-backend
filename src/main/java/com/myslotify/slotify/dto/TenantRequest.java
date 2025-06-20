@@ -22,6 +22,18 @@ public class TenantRequest {
     private String borderColour;
     private String font;
 
+    /**
+     * Existing logo URL. Used when updating a tenant without uploading a
+     * new file.
+     */
+    private String logoUrl;
+
+    /**
+     * Existing cover picture URL. Used when updating a tenant without a
+     * new file upload.
+     */
+    private String coverPictureUrl;
+
     private MultipartFile logo;
     private MultipartFile coverPicture;
 }
