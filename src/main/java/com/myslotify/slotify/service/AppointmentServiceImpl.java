@@ -66,7 +66,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private Employee getCurrentEmployee(Authentication auth) {
         String email = SecurityUtil.extractEmail(auth);
-        return employeeRepository.findByEmail(email)
+        return employeeRepository.findByUserEmail(email)
                 .orElseThrow(() -> new NotFoundException("Employee not found"));
     }
 
@@ -83,7 +83,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Employee employee = getCurrentEmployee(auth);
         TimeSlot slot = timeSlotRepository.findById(slotId)
                 .orElseThrow(() -> new NotFoundException("Time slot not found"));
-        if (!slot.getAvailability().getEmployee().getId().equals(employee.getId())) {
+        if (!slot.getAvailability().getEmployee().getEmployeeId().equals(employee.getEmployeeId())) {
             throw new UnauthorizedException("Unauthorized to book this slot");
         }
         User customer = userRepository.findById(customerId)
@@ -158,7 +158,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         logger.info("Cancelling appointment {} as employee", appointmentId);
         Employee employee = getCurrentEmployee(auth);
         Appointment appointment = getAppointment(appointmentId);
-        if (!appointment.getEmployee().getId().equals(employee.getId())) {
+        if (!appointment.getEmployee().getEmployeeId().equals(employee.getEmployeeId())) {
             throw new UnauthorizedException("Unauthorized to cancel this appointment");
         }
         cancelAppointmentInternal(appointment);

@@ -78,8 +78,13 @@ public class AuthServiceImpl implements AuthService {
             throw new UnauthorizedException("Tenant subscription inactive");
         }
 
-        User account = userRepository.findByEmail(request.getEmail())
-                .orElseGet(() -> employeeRepository.findByEmail(request.getEmail()).orElse(null));
+        User account = userRepository.findByEmail(request.getEmail()).orElse(null);
+        if (account == null) {
+            Employee employee = employeeRepository.findByUserEmail(request.getEmail()).orElse(null);
+            if (employee != null) {
+                account = employee.getUser();
+            }
+        }
 
         if (account == null || !passwordEncoder.matches(request.getPassword(), account.getPassword())) {
             throw new UnauthorizedException("Invalid credentials");

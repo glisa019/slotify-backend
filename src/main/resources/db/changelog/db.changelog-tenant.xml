@@ -49,17 +49,20 @@
       <column name="employee_id" type="UUID">
         <constraints primaryKey="true" nullable="false"/>
       </column>
+      <column name="user_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
     </createTable>
     <addForeignKeyConstraint baseTableName="employee"
-                             baseColumnNames="employee_id"
+                             baseColumnNames="user_id"
                              referencedTableName="user"
                              referencedColumnNames="user_id"
-                             constraintName="employee_availability"/>
+                             constraintName="fk_employee_user"/>
     <createTable tableName="employee_availability">
       <column name="availability_id" type="UUID">
         <constraints primaryKey="true" nullable="false"/>
       </column>
-      <column name="employee_id" type="UUID">
+      <column name="user_id" type="UUID">
         <constraints nullable="false"/>
       </column>
       <column name="date" type="DATE">
@@ -88,7 +91,7 @@
       <column name="appointment_id" type="UUID">
         <constraints primaryKey="true" nullable="false"/>
       </column>
-      <column name="employee_id" type="UUID">
+      <column name="user_id" type="UUID">
         <constraints nullable="false"/>
       </column>
       <column name="customer_id" type="UUID">

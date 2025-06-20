@@ -2,16 +2,23 @@ package com.myslotify.slotify.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "employee")
 @Data
-@EqualsAndHashCode(callSuper = true)
-@PrimaryKeyJoinColumn(name = "employee_id", referencedColumnName = "user_id")
-public class Employee extends User {
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "employee_id")
+    private UUID employeeId;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    private User user;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EmployeeAvailability> availabilities;

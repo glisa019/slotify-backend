@@ -72,12 +72,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             } else {
                 User user = userRepository.findByEmail(email).orElse(null);
                 if (user == null) {
-                    Employee employee = employeeRepository.findByEmail(email).orElse(null);
+                    Employee employee = employeeRepository.findByUserEmail(email).orElse(null);
                     if (employee != null) {
                         try {
-                            if (jwtService.isTokenValid(token, employee)) {
+                            if (jwtService.isTokenValid(token, employee.getUser())) {
                                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                                        employee, null, List.of(new SimpleGrantedAuthority("ROLE_" + employee.getRole().name())));
+                                        employee.getUser(), null,
+                                        List.of(new SimpleGrantedAuthority("ROLE_" + employee.getUser().getRole().name())));
                                 SecurityContextHolder.getContext().setAuthentication(auth);
                             }
                         } catch (Exception ignored) {
