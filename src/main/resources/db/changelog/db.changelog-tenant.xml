@@ -110,5 +110,35 @@
         <constraints nullable="false"/>
       </column>
     </createTable>
+    <addForeignKeyConstraint baseTableName="employee_availability"
+                             baseColumnNames="user_id"
+                             referencedTableName="employee"
+                             referencedColumnNames="user_id"
+                             constraintName="fk_availability_employee"/>
+    <addForeignKeyConstraint baseTableName="time_slot"
+                             baseColumnNames="availability_id"
+                             referencedTableName="employee_availability"
+                             referencedColumnNames="availability_id"
+                             constraintName="fk_time_slot_availability"/>
+    <addForeignKeyConstraint baseTableName="time_slot"
+                             baseColumnNames="appointment_id"
+                             referencedTableName="appointment"
+                             referencedColumnNames="appointment_id"
+                             constraintName="fk_time_slot_appointment"/>
+    <addForeignKeyConstraint baseTableName="appointment"
+                             baseColumnNames="user_id"
+                             referencedTableName="employee"
+                             referencedColumnNames="user_id"
+                             constraintName="fk_appointment_employee"/>
+    <addForeignKeyConstraint baseTableName="appointment"
+                             baseColumnNames="customer_id"
+                             referencedTableName="user"
+                             referencedColumnNames="user_id"
+                             constraintName="fk_appointment_customer"/>
+    <addForeignKeyConstraint baseTableName="appointment"
+                             baseColumnNames="service_id"
+                             referencedTableName="service"
+                             referencedColumnNames="service_id"
+                             constraintName="fk_appointment_service"/>
   </changeSet>
 </databaseChangeLog>
