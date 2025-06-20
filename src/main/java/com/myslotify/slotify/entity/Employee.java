@@ -17,7 +17,7 @@ public class Employee {
     private UUID employeeId;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, unique = true)
     private User user;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
