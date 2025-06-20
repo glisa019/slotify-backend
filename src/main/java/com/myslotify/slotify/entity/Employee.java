@@ -10,7 +10,6 @@ import java.util.List;
 @Table(name = "employee")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AttributeOverride(name = "id", column = @Column(name = "employee_id"))
 @PrimaryKeyJoinColumn(name = "employee_id", referencedColumnName = "user_id")
 public class Employee extends User {
 
