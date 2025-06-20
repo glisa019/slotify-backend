@@ -89,10 +89,14 @@ public class TenantServiceImpl implements TenantService {
         if (request.getLogo() != null && !request.getLogo().isEmpty()) {
             String logoPath = fileStorageService.store(request.getLogo());
             tenant.setLogoUrl(logoPath);
+        } else if (request.getLogoUrl() != null) {
+            tenant.setLogoUrl(request.getLogoUrl());
         }
         if (request.getCoverPicture() != null && !request.getCoverPicture().isEmpty()) {
             String coverPath = fileStorageService.store(request.getCoverPicture());
             tenant.setCoverPictureUrl(coverPath);
+        } else if (request.getCoverPictureUrl() != null) {
+            tenant.setCoverPictureUrl(request.getCoverPictureUrl());
         }
         tenant.setTenantAdmin(admin);
         tenant.setCreatedAt(LocalDateTime.now());
@@ -190,10 +194,14 @@ public class TenantServiceImpl implements TenantService {
         if (request.getLogo() != null && !request.getLogo().isEmpty()) {
             String logoPath = fileStorageService.store(request.getLogo());
             tenant.setLogoUrl(logoPath);
+        } else if (request.getLogoUrl() != null) {
+            tenant.setLogoUrl(request.getLogoUrl());
         }
         if (request.getCoverPicture() != null && !request.getCoverPicture().isEmpty()) {
             String coverPath = fileStorageService.store(request.getCoverPicture());
             tenant.setCoverPictureUrl(coverPath);
+        } else if (request.getCoverPictureUrl() != null) {
+            tenant.setCoverPictureUrl(request.getCoverPictureUrl());
         }
 
         tenantRepository.save(tenant);
