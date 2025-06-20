@@ -61,4 +61,13 @@
       </column>
     </createTable>
   </changeSet>
+  <changeSet id="add-tenant-admin-fk" author="nikola">
+    <addForeignKeyConstraint baseTableName="tenant"
+                             baseTableSchemaName="system"
+                             baseColumnNames="admin_id"
+                             referencedTableName="admin"
+                             referencedTableSchemaName="system"
+                             referencedColumnNames="admin_id"
+                             constraintName="fk_tenant_admin"/>
+  </changeSet>
 </databaseChangeLog>
