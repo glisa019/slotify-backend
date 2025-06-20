@@ -47,7 +47,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     public List<EmployeeAvailability> getAvailabilityForEmployee(Authentication auth) {
         logger.info("Fetching availability for current employee");
         Employee employee = getCurrentEmployee(auth);
-        return availabilityRepository.findByEmployeeId(employee.getEmployeeId());
+        return availabilityRepository.findByEmployeeEmployeeId(employee.getEmployeeId());
     }
 
     public List<EmployeeAvailability> createAvailabilityForDates(CreateAvailabilityRequest request, Authentication auth) {
