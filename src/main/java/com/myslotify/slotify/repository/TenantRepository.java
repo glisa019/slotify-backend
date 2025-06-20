@@ -1,9 +1,11 @@
 package com.myslotify.slotify.repository;
 
 import com.myslotify.slotify.entity.Tenant;
+import com.myslotify.slotify.entity.SubscriptionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,4 +16,6 @@ public interface TenantRepository extends JpaRepository<Tenant, UUID> {
     Optional<Tenant> findBySchemaName(String schemaName);
 
     Optional<Tenant> findByTenantAdminEmail(String email);
+
+    List<Tenant> findAllBySubscriptionStatus(SubscriptionStatus subscriptionStatus);
 }

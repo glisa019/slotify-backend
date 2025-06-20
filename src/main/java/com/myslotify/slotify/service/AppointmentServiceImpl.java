@@ -183,7 +183,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Scheduled(cron = "0 0 * * * *")
     public void sendRemindersForUpcomingAppointments() {
         logger.info("Sending appointment reminders for all tenants");
-        List<Tenant> tenants = tenantRepository.findAll();
+        List<Tenant> tenants = tenantRepository.findAllBySubscriptionStatus(SubscriptionStatus.ACTIVE);
         for (Tenant tenant : tenants) {
             try {
                 logger.info("Processing reminders for tenant {}", tenant.getName());
