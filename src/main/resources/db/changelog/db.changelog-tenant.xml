@@ -50,7 +50,7 @@
         <constraints primaryKey="true" nullable="false"/>
       </column>
       <column name="user_id" type="UUID">
-        <constraints nullable="false"/>
+        <constraints nullable="false" unique="true"/>
       </column>
     </createTable>
     <addForeignKeyConstraint baseTableName="employee"
