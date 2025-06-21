@@ -2,6 +2,7 @@ package com.myslotify.slotify.controller;
 
 import com.myslotify.slotify.entity.TimeSlot;
 import com.myslotify.slotify.service.AvailabilityService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
@@ -23,8 +24,10 @@ public class TimeSlotController {
     }
 
     @GetMapping("/{employeeId}")
-    public ResponseEntity<List<TimeSlot>> getAvailableSlotsForEmployee(@PathVariable UUID employeeId) {
-        logger.info("Fetching available slots for employee {}", employeeId);
-        return ResponseEntity.ok(availabilityService.getAvailableTimeSlotsForEmployee(employeeId));
+    public ResponseEntity<List<TimeSlot>> getAvailableSlotsForEmployee(
+            @PathVariable UUID employeeId,
+            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.time.LocalDate date) {
+        logger.info("Fetching available slots for employee {} on {}", employeeId, date);
+        return ResponseEntity.ok(availabilityService.getAvailableTimeSlotsForEmployee(employeeId, date));
     }
 }

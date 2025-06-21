@@ -19,4 +19,5 @@ public interface AvailabilityService {
     void unblockTimeSlot(UUID timeSlotId, Authentication auth);
     List<TimeSlot> getAvailableTimeSlotsForEmployee(Authentication auth);
     List<TimeSlot> getAvailableTimeSlotsForEmployee(UUID employeeId);
+    List<TimeSlot> getAvailableTimeSlotsForEmployee(UUID employeeId, java.time.LocalDate date);
 }
