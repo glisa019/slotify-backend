@@ -123,6 +123,7 @@ public class UserServiceImpl implements UserService {
 
         Employee employee = new Employee();
         employee.setUser(user);
+        employee.setRole(request.getRole());
 
         Employee saved = employeeRepository.save(employee);
 
