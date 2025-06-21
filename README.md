@@ -130,5 +130,8 @@ Tenant admins can modify details about their tenant once activated:
 PUT /api/tenants/me
 ```
 
-The request body uses the same format as tenant creation and the updated
-tenant record is returned on success.
+This endpoint consumes `multipart/form-data`. Use form fields with the same
+names as tenant creation (`name`, `description`, etc.). New logo or cover
+pictures can be uploaded via the `logo` and `coverPicture` fields. When these
+files are omitted, the existing images will be kept. The updated tenant record
+is returned on success.

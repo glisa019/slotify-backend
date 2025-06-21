@@ -191,17 +191,15 @@ public class TenantServiceImpl implements TenantService {
         tenant.setBackgroundColour(request.getBackgroundColour());
         tenant.setBorderColour(request.getBorderColour());
         tenant.setFont(request.getFont());
+
         if (request.getLogo() != null && !request.getLogo().isEmpty()) {
             String logoPath = fileStorageService.store(request.getLogo());
             tenant.setLogoUrl(logoPath);
-        } else if (request.getLogoUrl() != null) {
-            tenant.setLogoUrl(request.getLogoUrl());
         }
+
         if (request.getCoverPicture() != null && !request.getCoverPicture().isEmpty()) {
             String coverPath = fileStorageService.store(request.getCoverPicture());
             tenant.setCoverPictureUrl(coverPath);
-        } else if (request.getCoverPictureUrl() != null) {
-            tenant.setCoverPictureUrl(request.getCoverPictureUrl());
         }
 
         tenantRepository.save(tenant);

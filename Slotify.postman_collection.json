@@ -240,7 +240,7 @@
             "header": [
               {
                 "key": "Content-Type",
-                "value": "application/json"
+                "value": "multipart/form-data"
               },
               {
                 "key": "Authorization",
@@ -263,8 +263,14 @@
               ]
             },
             "body": {
-              "mode": "raw",
-              "raw": "{}"
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Tenant Name",
+                  "type": "text"
+                }
+              ]
             }
           },
           "response": []
