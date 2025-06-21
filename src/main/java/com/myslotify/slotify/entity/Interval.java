@@ -1,5 +1,7 @@
 package com.myslotify.slotify.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 @Getter
@@ -27,6 +29,21 @@ public enum Interval {
     // Constructor
     Interval(int minutes) {
         this.minutes = minutes;
+    }
+
+    @JsonValue
+    public int toValue() {
+        return minutes;
+    }
+
+    @JsonCreator
+    public static Interval fromMinutes(int minutes) {
+        for (Interval interval : values()) {
+            if (interval.minutes == minutes) {
+                return interval;
+            }
+        }
+        throw new IllegalArgumentException("Invalid interval: " + minutes);
     }
 
 }

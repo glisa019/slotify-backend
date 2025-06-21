@@ -400,7 +400,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Consultation\",\n  \"duration\": \"MINUTES_30\",\n  \"description\": \"Initial consult\",\n  \"price\": 50\n}"
+              "raw": "{\n  \"name\": \"Consultation\",\n  \"duration\": 30,\n  \"description\": \"Initial consult\",\n  \"price\": 50\n}"
             }
           },
           "response": []
