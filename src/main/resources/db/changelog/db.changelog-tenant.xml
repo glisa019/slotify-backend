@@ -52,6 +52,7 @@
       <column name="user_id" type="UUID">
         <constraints nullable="false" unique="true"/>
       </column>
+      <column name="role" type="VARCHAR(255)"/>
     </createTable>
     <addForeignKeyConstraint baseTableName="employee"
                              baseColumnNames="user_id"
