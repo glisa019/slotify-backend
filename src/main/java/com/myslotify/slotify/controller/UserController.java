@@ -85,7 +85,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getCurrentUser(auth));
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("permitAll()")
     @PostMapping("/user")
     public ResponseEntity<AuthResponse> createUser(@RequestBody CreateUserRequest request) {
         logger.info("Creating user {}", request.getEmail());
