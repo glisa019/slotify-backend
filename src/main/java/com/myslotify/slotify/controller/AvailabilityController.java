@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,8 +71,11 @@ public class AvailabilityController {
 
     @GetMapping("/available-slots")
     @PreAuthorize("hasRole('EMPLOYEE')")
-    public ResponseEntity<List<TimeSlot>> getAvailableSlots(Authentication auth) {
-        logger.info("Fetching available time slots for current employee");
-        return ResponseEntity.ok(availabilityService.getAvailableTimeSlotsForEmployee(auth));
+    public ResponseEntity<List<TimeSlot>> getAvailableSlots(
+            @RequestParam("date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.time.LocalDate date,
+            Authentication auth) {
+        logger.info("Fetching available time slots for current employee on {}", date);
+        return ResponseEntity.ok(availabilityService.getAvailableTimeSlotsForEmployee(auth, date));
     }
 }
