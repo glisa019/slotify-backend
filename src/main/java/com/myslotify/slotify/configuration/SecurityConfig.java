@@ -42,9 +42,9 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/api/tenants/key/**",
-                                "/api/admins/tenant"
+                                "/api/admins/tenant",
+                                "/api/user"
                         ).permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
