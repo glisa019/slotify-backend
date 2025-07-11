@@ -28,7 +28,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasRole('TENANT_ADMIN')")
+    @PreAuthorize("hasRole('TENANT_ADMIN') or hasRole('CUSTOMER')")
     @GetMapping("/employee")
     public ResponseEntity<List<Employee>> getAllEmployees() {
         logger.info("Fetching all employees");
