@@ -1,6 +1,7 @@
 package com.myslotify.slotify.filter;
 
 import com.myslotify.slotify.util.TenantContext;
+import com.myslotify.slotify.service.JwtService;
 import org.slf4j.MDC;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,14 +15,31 @@ import java.io.IOException;
 @Component
 public class TenantFilter extends OncePerRequestFilter {
 
+    private final JwtService jwtService;
+
+    public TenantFilter(JwtService jwtService) {
+        this.jwtService = jwtService;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String tenantId = request.getHeader("X-Tenant-ID"); // Pass tenant identifier in a header
+        String tenantId = request.getHeader("X-Tenant-ID");
+        if (tenantId == null) {
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                try {
+                    tenantId = jwtService.extractTenant(authHeader.substring(7));
+                } catch (Exception ignored) {
+                }
+            }
+        }
+
         if (tenantId != null) {
             TenantContext.setCurrentTenant(tenantId);
             MDC.put("tenant", tenantId);
         }
+
         try {
             filterChain.doFilter(request, response);
         } finally {
