@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.myslotify.slotify.util.TenantContext;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -38,14 +39,19 @@ public class JwtServiceImpl implements JwtService {
         } else {
             role = ((User) account).getRole().name();
         }
-
-        return Jwts.builder()
+        var builder = Jwts.builder()
                 .setSubject(account.getEmail())
                 .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(Date.from(Instant.now().plus(Duration.ofHours(12))))
-                .signWith(getKey())
-                .compact();
+                .signWith(getKey());
+
+        String tenant = TenantContext.getCurrentTenant();
+        if (tenant != null) {
+            builder.claim("tenant", tenant);
+        }
+
+        return builder.compact();
     }
 
     private Key getKey() {
@@ -58,6 +64,10 @@ public class JwtServiceImpl implements JwtService {
 
     public String extractRole(String token) {
         return parseAllClaims(token).get("role", String.class);
+    }
+
+    public String extractTenant(String token) {
+        return parseAllClaims(token).get("tenant", String.class);
     }
 
     private Claims parseAllClaims(String token) {
