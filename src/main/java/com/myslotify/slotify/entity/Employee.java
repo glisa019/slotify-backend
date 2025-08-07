@@ -3,6 +3,8 @@ package com.myslotify.slotify.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,8 +19,9 @@ public class Employee {
     @Column(name = "employee_id")
     private UUID employeeId;
 
-    @JsonIgnore
-    @OneToOne
+    @Getter(onMethod_ = @JsonIgnore)
+    @ToString.Exclude
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, unique = true)
     private User user;
 
