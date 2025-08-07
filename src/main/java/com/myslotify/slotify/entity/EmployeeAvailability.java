@@ -1,7 +1,10 @@
 package com.myslotify.slotify.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,7 +19,9 @@ public class EmployeeAvailability {
     @Column(name = "availability_id")
     private UUID availabilityId;
 
-    @ManyToOne
+    @Getter(onMethod_ = @JsonIgnore)
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private Employee employee;
 
