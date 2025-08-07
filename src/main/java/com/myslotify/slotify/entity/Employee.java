@@ -1,5 +1,6 @@
 package com.myslotify.slotify.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class Employee {
     @Column(name = "employee_id")
     private UUID employeeId;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, unique = true)
     private User user;
