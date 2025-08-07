@@ -2,6 +2,8 @@ package com.myslotify.slotify.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalTime;
 import java.util.UUID;
@@ -25,6 +27,8 @@ public class TimeSlot {
     @Column(name = "status", nullable = false)
     private SlotStatus status;
 
+    @ToString.Exclude
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "availability_id", nullable = false)
     private EmployeeAvailability availability;
