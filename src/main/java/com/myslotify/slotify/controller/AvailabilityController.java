@@ -28,14 +28,14 @@ public class AvailabilityController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('EMPLOYEE')")
+    //@PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<List<EmployeeAvailability>> getAvailability(Authentication auth) {
         logger.info("Fetching availability for current employee");
         return ResponseEntity.ok(availabilityService.getAvailabilityForEmployee(auth));
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('EMPLOYEE')")
+    //@PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<List<EmployeeAvailability>> createAvailability(
             @RequestBody CreateAvailabilityRequest request,
             Authentication auth) {
@@ -46,7 +46,7 @@ public class AvailabilityController {
     }
 
     @DeleteMapping("/{availabilityId}")
-    @PreAuthorize("hasRole('EMPLOYEE')")
+    //@PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<Void> deleteAvailability(@PathVariable UUID availabilityId, Authentication auth) {
         logger.info("Deleting availability {}", availabilityId);
         availabilityService.deleteAvailability(availabilityId, auth);
@@ -54,7 +54,7 @@ public class AvailabilityController {
     }
 
     @PutMapping("/block/{slotId}")
-    @PreAuthorize("hasRole('EMPLOYEE')")
+    //@PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<Void> blockTimeSlot(@PathVariable UUID slotId, Authentication auth) {
         logger.info("Blocking time slot {}", slotId);
         availabilityService.blockTimeSlot(slotId, auth);
@@ -62,7 +62,7 @@ public class AvailabilityController {
     }
 
     @PutMapping("/unblock/{slotId}")
-    @PreAuthorize("hasRole('EMPLOYEE')")
+    //@PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<Void> unblockTimeSlot(@PathVariable UUID slotId, Authentication auth) {
         logger.info("Unblocking time slot {}", slotId);
         availabilityService.unblockTimeSlot(slotId, auth);
@@ -70,7 +70,7 @@ public class AvailabilityController {
     }
 
     @GetMapping("/available-slots")
-    @PreAuthorize("hasRole('EMPLOYEE')")
+    //@PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<List<TimeSlot>> getAvailableSlots(
             @RequestParam("date")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.time.LocalDate date,

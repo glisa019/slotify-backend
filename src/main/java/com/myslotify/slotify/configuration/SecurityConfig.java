@@ -46,7 +46,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/api/tenants/key/**",
                                 "/api/admins/tenant",
-                                "/api/user"
+                                "/api/user",
+                                "/api/availability"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

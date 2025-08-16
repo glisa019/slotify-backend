@@ -19,8 +19,6 @@ public class Employee {
     @Column(name = "employee_id")
     private UUID employeeId;
 
-    @Getter(onMethod_ = @JsonIgnore)
-    @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, unique = true)
     private User user;
