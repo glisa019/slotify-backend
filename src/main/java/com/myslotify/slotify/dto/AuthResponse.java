@@ -12,16 +12,22 @@ public class AuthResponse {
     public BaseAccount account;
     public boolean passwordResetRequired;
     public Boolean tenantExists;
+    public String tenantKey;
 
     public AuthResponse(String message, String token, BaseAccount account, boolean passwordResetRequired) {
-        this(message, token, account, passwordResetRequired, null);
+        this(message, token, account, passwordResetRequired, null, null);
     }
 
     public AuthResponse(String message, String token, BaseAccount account, boolean passwordResetRequired, Boolean tenantExists) {
+        this(message, token, account, passwordResetRequired, tenantExists, null);
+    }
+
+    public AuthResponse(String message, String token, BaseAccount account, boolean passwordResetRequired, Boolean tenantExists, String tenantKey) {
         this.message = message;
         this.token = token;
         this.account = account;
         this.passwordResetRequired = passwordResetRequired;
         this.tenantExists = tenantExists;
+        this.tenantKey = tenantKey;
     }
 }

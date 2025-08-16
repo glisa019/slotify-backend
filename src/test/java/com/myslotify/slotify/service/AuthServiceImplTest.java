@@ -55,6 +55,7 @@ class AuthServiceImplTest {
 
         Admin admin = new Admin();
         admin.setPassword("hashed");
+        admin.setRole(AdminRole.SYSTEM_ADMIN);
         when(adminRepository.findByEmail("admin@example.com")).thenReturn(Optional.of(admin));
         when(passwordEncoder.matches("pass", "hashed")).thenReturn(true);
         when(jwtService.generateToken(admin)).thenReturn("token");
@@ -64,6 +65,7 @@ class AuthServiceImplTest {
         assertEquals(admin, response.getAccount());
         assertFalse(response.isPasswordResetRequired());
         assertNull(response.getTenantExists());
+        assertNull(response.getTenantKey());
     }
 
     @Test
@@ -89,6 +91,7 @@ class AuthServiceImplTest {
         assertEquals(user, response.getAccount());
         assertFalse(response.isPasswordResetRequired());
         assertNull(response.getTenantExists());
+        assertNull(response.getTenantKey());
     }
 
     @Test
@@ -125,12 +128,14 @@ class AuthServiceImplTest {
 
         Tenant tenant = new Tenant();
         tenant.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
+        tenant.setSchemaName("tenant1");
         when(tenantRepository.findByTenantAdminEmail("admin@example.com")).thenReturn(Optional.of(tenant));
         when(jwtService.generateToken(admin)).thenReturn("token");
 
         AuthResponse response = authService.login(request);
         assertEquals("token", response.getToken());
         assertTrue(response.getTenantExists());
+        assertEquals("tenant1", response.getTenantKey());
     }
 
     @Test
@@ -150,5 +155,6 @@ class AuthServiceImplTest {
         AuthResponse response = authService.login(request);
         assertEquals("token", response.getToken());
         assertFalse(response.getTenantExists());
+        assertNull(response.getTenantKey());
     }
 }
