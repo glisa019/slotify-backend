@@ -35,7 +35,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllEmployees());
     }
 
-    @PreAuthorize("hasRole('TENANT_ADMIN') or (hasRole('CUSTOMER') or (hasRole('EMPLOYEE') and #id == authentication.principal.id)")
+    @PreAuthorize("hasRole('TENANT_ADMIN') or hasRole('CUSTOMER') or (hasRole('EMPLOYEE') and #id == authentication.principal.id)")
     @GetMapping("/employee/{id}")
     public ResponseEntity<Employee> getEmployee(@PathVariable UUID id) {
         logger.info("Fetching employee {}", id);
@@ -71,7 +71,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @PreAuthorize("hasRole('TENANT_ADMIN') or (hasRole('CUSTOMER') or (hasRole('EMPLOYEE') and #id == authentication.principal.id)")
+    @PreAuthorize("hasRole('TENANT_ADMIN') or hasRole('CUSTOMER') or (hasRole('EMPLOYEE') and #id == authentication.principal.id)")
     @GetMapping("/user/{id}")
     public ResponseEntity<User> getUser(@PathVariable UUID id) {
         logger.info("Fetching user {}", id);
