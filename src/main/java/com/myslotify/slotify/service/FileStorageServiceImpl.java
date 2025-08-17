@@ -45,6 +45,6 @@ public class FileStorageServiceImpl implements FileStorageService {
         } catch (IOException e) {
             throw new RuntimeException("Failed to store file", e);
         }
-        return target.toString();
+        return "/uploads/" + filename;
     }
 }
