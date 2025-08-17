@@ -71,7 +71,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @PreAuthorize("hasAnyRole('TENANT_ADMIN','ADMIN') or (hasRole('CUSTOMER') and #id == authentication.principal.id)")
+    @PreAuthorize("hasRole('TENANT_ADMIN') or (hasRole('CUSTOMER') or (hasRole('EMPLOYEE') and #id == authentication.principal.id)")
     @GetMapping("/user/{id}")
     public ResponseEntity<User> getUser(@PathVariable UUID id) {
         logger.info("Fetching user {}", id);
