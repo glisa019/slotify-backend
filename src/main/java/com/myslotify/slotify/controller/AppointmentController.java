@@ -1,5 +1,7 @@
 package com.myslotify.slotify.controller;
 
+import com.myslotify.slotify.dto.CreateAppointmentForCustomerRequest;
+import com.myslotify.slotify.dto.CreateAppointmentRequest;
 import com.myslotify.slotify.entity.Appointment;
 import com.myslotify.slotify.service.AppointmentService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -45,27 +47,24 @@ public class AppointmentController {
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<Appointment> createAppointment(
-            @RequestParam String slotId,
-            @RequestParam String serviceId,
+            @RequestBody CreateAppointmentRequest request,
             Authentication auth) {
-        logger.info("Creating appointment for slot {} and service {}", slotId, serviceId);
+        logger.info("Creating appointment for slot {} and service {}", request.getSlotId(), request.getServiceId());
         return ResponseEntity.ok(
-                appointmentService.createAppointment(UUID.fromString(slotId), UUID.fromString(serviceId), auth));
+                appointmentService.createAppointment(request.getSlotId(), request.getServiceId(), auth));
     }
 
     @PostMapping("/customer")
     @PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<Appointment> createAppointmentForCustomer(
-            @RequestParam String slotId,
-            @RequestParam String serviceId,
-            @RequestParam String customerId,
+            @RequestBody CreateAppointmentForCustomerRequest request,
             Authentication auth) {
-        logger.info("Employee creating appointment for customer {} on slot {} and service {}", customerId, slotId, serviceId);
+        logger.info("Employee creating appointment for customer {} on slot {} and service {}", request.getCustomerId(), request.getSlotId(), request.getServiceId());
         return ResponseEntity.ok(
                 appointmentService.createAppointmentForCustomer(
-                        UUID.fromString(slotId),
-                        UUID.fromString(serviceId),
-                        UUID.fromString(customerId),
+                        request.getSlotId(),
+                        request.getServiceId(),
+                        request.getCustomerId(),
                         auth));
     }
 

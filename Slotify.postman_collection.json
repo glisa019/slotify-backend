@@ -1181,6 +1181,10 @@
             "method": "POST",
             "header": [
               {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
                 "key": "Authorization",
                 "value": "Bearer {{token}}"
               },
@@ -1190,14 +1194,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/appointments?slotId={{slotId}}&serviceId={{serviceId}}",
+              "raw": "{{baseUrl}}/api/appointments",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
-                "appointments?slotId={{slotId}}&serviceId={{serviceId}}"
+                "appointments"
               ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"slotId\":\"{{slotId}}\",\"serviceId\":\"{{serviceId}}\"}"
             }
           },
           "response": []
@@ -1208,6 +1216,10 @@
             "method": "POST",
             "header": [
               {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
                 "key": "Authorization",
                 "value": "Bearer {{token}}"
               },
@@ -1217,15 +1229,19 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/appointments/customer?slotId={{slotId}}&serviceId={{serviceId}}&customerId={{userId}}",
+              "raw": "{{baseUrl}}/api/appointments/customer",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "appointments",
-                "customer?slotId={{slotId}}&serviceId={{serviceId}}&customerId={{userId}}"
+                "customer"
               ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"slotId\":\"{{slotId}}\",\"serviceId\":\"{{serviceId}}\",\"customerId\":\"{{userId}}\"}"
             }
           },
           "response": []
