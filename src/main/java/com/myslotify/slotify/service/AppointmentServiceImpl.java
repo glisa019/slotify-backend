@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -53,9 +54,20 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<Appointment> getAppointmentsBetween(LocalDateTime start, LocalDateTime end) {
-        logger.info("Fetching appointments between {} and {}", start, end);
-        return appointmentRepository.findByAppointmentTimeBetween(start, end);
+    public List<Appointment> getAppointments(LocalDate date, Authentication auth) {
+        if (date != null) {
+            Employee employee = getCurrentEmployee(auth);
+            LocalDateTime start = date.atStartOfDay();
+            LocalDateTime end = start.plusDays(1);
+            logger.info("Fetching appointments for employee {} on {}", employee.getEmployeeId(), date);
+            return appointmentRepository.findByEmployeeEmployeeIdAndAppointmentTimeBetween(
+                    employee.getEmployeeId(), start, end);
+        } else {
+            User user = getCurrentUser(auth);
+            LocalDateTime now = LocalDateTime.now();
+            logger.info("Fetching upcoming appointments for customer {}", user.getId());
+            return appointmentRepository.findByCustomerIdAndAppointmentTimeAfter(user.getId(), now);
+        }
     }
 
     private User getCurrentUser(Authentication auth) {

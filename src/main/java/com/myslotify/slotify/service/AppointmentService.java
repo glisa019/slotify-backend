@@ -3,13 +3,13 @@ package com.myslotify.slotify.service;
 import com.myslotify.slotify.entity.Appointment;
 import org.springframework.security.core.Authentication;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 public interface AppointmentService {
     Appointment getAppointment(UUID id);
-    List<Appointment> getAppointmentsBetween(LocalDateTime start, LocalDateTime end);
+    List<Appointment> getAppointments(LocalDate date, Authentication auth);
     void sendRemindersForUpcomingAppointments();
 
     Appointment createAppointment(UUID slotId, UUID serviceId, Authentication auth);
