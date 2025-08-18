@@ -45,23 +45,28 @@ public class AppointmentController {
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<Appointment> createAppointment(
-            @RequestParam UUID slotId,
-            @RequestParam UUID serviceId,
+            @RequestParam String slotId,
+            @RequestParam String serviceId,
             Authentication auth) {
         logger.info("Creating appointment for slot {} and service {}", slotId, serviceId);
-        return ResponseEntity.ok(appointmentService.createAppointment(slotId, serviceId, auth));
+        return ResponseEntity.ok(
+                appointmentService.createAppointment(UUID.fromString(slotId), UUID.fromString(serviceId), auth));
     }
 
     @PostMapping("/customer")
     @PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<Appointment> createAppointmentForCustomer(
-            @RequestParam UUID slotId,
-            @RequestParam UUID serviceId,
-            @RequestParam UUID customerId,
+            @RequestParam String slotId,
+            @RequestParam String serviceId,
+            @RequestParam String customerId,
             Authentication auth) {
         logger.info("Employee creating appointment for customer {} on slot {} and service {}", customerId, slotId, serviceId);
         return ResponseEntity.ok(
-                appointmentService.createAppointmentForCustomer(slotId, serviceId, customerId, auth));
+                appointmentService.createAppointmentForCustomer(
+                        UUID.fromString(slotId),
+                        UUID.fromString(serviceId),
+                        UUID.fromString(customerId),
+                        auth));
     }
 
     @DeleteMapping("/{id}")
