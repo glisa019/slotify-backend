@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,13 +33,13 @@ public class AppointmentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Appointment>> getAppointmentsBetween(
-            @RequestParam("start")
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-            @RequestParam("end")
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
-        logger.info("Fetching appointments between {} and {}", start, end);
-        return ResponseEntity.ok(appointmentService.getAppointmentsBetween(start, end));
+    @PreAuthorize("hasAnyRole('CUSTOMER','EMPLOYEE')")
+    public ResponseEntity<List<Appointment>> getAppointments(
+            @RequestParam(value = "date", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            Authentication auth) {
+        logger.info("Fetching appointments for date {}", date);
+        return ResponseEntity.ok(appointmentService.getAppointments(date, auth));
     }
 
     @PostMapping
