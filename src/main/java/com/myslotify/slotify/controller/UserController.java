@@ -92,7 +92,7 @@ public class UserController {
         return ResponseEntity.ok(userService.createUser(request));
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('TENANT_ADMIN') or hasRole('CUSTOMER') or (hasRole('EMPLOYEE'))")
     @PutMapping("/user/{id}")
     public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody UpdateUserRequest request) {
         logger.info("Updating user {}", id);
