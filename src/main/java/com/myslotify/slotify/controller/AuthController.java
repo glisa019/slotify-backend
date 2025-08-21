@@ -5,10 +5,7 @@ import com.myslotify.slotify.dto.LoginRequest;
 import com.myslotify.slotify.dto.ResetPasswordRequest;
 import com.myslotify.slotify.service.AuthService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,5 +31,11 @@ public class AuthController {
     public ResponseEntity<AuthResponse> resetPassword(@RequestBody ResetPasswordRequest request) {
         logger.info("Reset password for {}", request.getEmail());
         return ResponseEntity.ok(authService.resetPassword(request));
+    }
+
+    @PostMapping("/admin/reset-password")
+    public ResponseEntity<AuthResponse> resetAdminPassword(@RequestBody ResetPasswordRequest request) {
+        logger.info("Reset admin password for {}", request.getEmail());
+        return ResponseEntity.ok(authService.resetAdminPassword(request));
     }
 }
