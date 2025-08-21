@@ -51,4 +51,15 @@ class AuthControllerTest {
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void resetAdminPasswordEndpointReturnsOk() throws Exception {
+        ResetPasswordRequest request = new ResetPasswordRequest();
+        Mockito.when(authService.resetAdminPassword(Mockito.any())).thenReturn(new AuthResponse("ok", "token", null, false));
+
+        mockMvc.perform(post("/api/auth/admin/reset-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+    }
 }

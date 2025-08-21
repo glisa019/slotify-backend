@@ -119,4 +119,22 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtService.generateToken(user);
         return new AuthResponse("Password reset successful", token, user, false);
     }
+
+    @Override
+    public AuthResponse resetAdminPassword(ResetPasswordRequest request) {
+        logger.info("Resetting password for admin {}", request.getEmail());
+        TenantContext.clear();
+        Admin admin = adminRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new NotFoundException("Admin not found"));
+
+        if (!passwordEncoder.matches(request.getTemporaryPassword(), admin.getPassword())) {
+            throw new UnauthorizedException("Temporary password is incorrect.");
+        }
+
+        admin.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        adminRepository.save(admin);
+
+        String token = jwtService.generateToken(admin);
+        return new AuthResponse("Password reset successful", token, admin, false);
+    }
 }
